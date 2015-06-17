@@ -93,9 +93,20 @@ namespace Autofac.Integration.Wcf
             {
                 throw new ArgumentNullException("instanceContext");
             }
-            var extension = new AutofacInstanceContext(_rootLifetimeScope);
-            instanceContext.Extensions.Add(extension);
-            return extension.Resolve(_serviceData);
+
+            var autofacInstanceContext = new AutofacInstanceContext(_rootLifetimeScope);
+            instanceContext.Extensions.Add(autofacInstanceContext);
+
+            try
+            {
+                return autofacInstanceContext.Resolve(_serviceData);
+            }
+            catch (Exception)
+            {
+                autofacInstanceContext.Dispose();
+                instanceContext.Extensions.Remove(autofacInstanceContext);
+                throw;
+            }
         }
 
         /// <summary>

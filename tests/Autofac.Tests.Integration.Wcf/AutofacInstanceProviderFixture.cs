@@ -1,7 +1,11 @@
 ﻿using System;
+using System.Linq;
+using System.ServiceModel;
 using System.ServiceModel.Channels;
 using Autofac;
+using Autofac.Core;
 using Autofac.Integration.Wcf;
+using Autofac.Util;
 using NUnit.Framework;
 
 namespace Autofac.Tests.Integration.Wcf
@@ -43,6 +47,23 @@ namespace Autofac.Tests.Integration.Wcf
             Assert.Throws<ArgumentNullException>(() => provider.ReleaseInstance(null, instance));
         }
 
+        [Test]
+        public void LifetimeScopeDisposedWhenExceptionThrownInServiceConstructor()
+        {
+            var builder = new ContainerBuilder();
+            var released = false;
+            builder.RegisterType<Disposable>().OnRelease(d => released = true);
+            builder.RegisterType<BadService>();
+            var container = builder.Build();
+            var data = new ServiceImplementationData {ImplementationResolver = l => l.Resolve<BadService>()};
+            var provider = new AutofacInstanceProvider(container, data);
+            var context = new InstanceContext(new object());
+
+            Assert.Throws<DependencyResolutionException>(() => provider.GetInstance(context));
+
+            Assert.IsTrue(released);
+        }
+
         private class TestMessage : Message
         {
             public override MessageHeaders Headers
@@ -63,6 +84,15 @@ namespace Autofac.Tests.Integration.Wcf
             public override MessageVersion Version
             {
                 get { throw new NotImplementedException(); }
+            }
+        }
+
+        class BadService
+        {
+            // ReSharper disable once UnusedParameter.Local
+            public BadService(Disposable disposable)
+            {
+                throw new Exception("Boom!!!");
             }
         }
     }
