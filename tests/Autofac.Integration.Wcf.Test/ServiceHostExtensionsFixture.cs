@@ -26,45 +26,43 @@
 using System;
 using System.Linq;
 using System.ServiceModel;
-using NUnit.Framework;
-using Autofac.Integration.Wcf;
+using Xunit;
 
 namespace Autofac.Integration.Wcf.Test
 {
-    [TestFixture]
     public class ServiceHostExtensionsFixture
     {
-        [Test]
+        [Fact]
         public void AddDependencyInjectionBehavior_NullContractType_ThrowsException()
         {
             ServiceHost serviceHost = new ServiceHost(typeof(ServiceType));
             ArgumentNullException exception = Assert.Throws<ArgumentNullException>(
                 () => serviceHost.AddDependencyInjectionBehavior(null, new ContainerBuilder().Build()));
-            Assert.That(exception.ParamName, Is.EqualTo("contractType"));
+            Assert.Equal("contractType", exception.ParamName);
         }
 
-        [Test]
+        [Fact]
         public void AddDependencyInjectionBehavior_NullContainer_ThrowsException()
         {
             ServiceHost serviceHost = new ServiceHost(typeof(ServiceType));
             ArgumentNullException exception = Assert.Throws<ArgumentNullException>(
                 () => serviceHost.AddDependencyInjectionBehavior(typeof(IContractType), null));
-            Assert.That(exception.ParamName, Is.EqualTo("container"));
+            Assert.Equal("container", exception.ParamName);
         }
 
-        [Test]
+        [Fact]
         public void AddDependencyInjectionBehavior_ContractTypeNotRegistered_ThrowsException()
         {
             ServiceHost serviceHost = new ServiceHost(typeof(ServiceType));
             Type contractType = typeof(IContractType);
             ArgumentException exception = Assert.Throws<ArgumentException>(
                 () => serviceHost.AddDependencyInjectionBehavior(contractType, new ContainerBuilder().Build()));
-            Assert.That(exception.ParamName, Is.EqualTo("contractType"));
+            Assert.Equal("contractType", exception.ParamName);
             string message = string.Format(ServiceHostExtensionsResources.ContractTypeNotRegistered, contractType.FullName);
-            Assert.That(exception.Message, Is.StringContaining(message));
+            Assert.Contains(message, exception.Message);
         }
 
-        [Test]
+        [Fact]
         public void AddDependencyInjectionBehavior_ContractTypeRegistered_ServiceBehaviorConfigured()
         {
             ContainerBuilder builder = new ContainerBuilder();
@@ -77,10 +75,10 @@ namespace Autofac.Integration.Wcf.Test
             int serviceBehaviorCount = serviceHost.Description.Behaviors
                 .OfType<AutofacDependencyInjectionServiceBehavior>()
                 .Count();
-            Assert.That(serviceBehaviorCount, Is.EqualTo(1));
+            Assert.Equal(1, serviceBehaviorCount);
         }
 
-        [Test]
+        [Fact]
         public void AddDependencyInjectionBehavior_SingleInstanceContextMode_ServiceBehaviorIgnored()
         {
             ContainerBuilder builder = new ContainerBuilder();
@@ -93,10 +91,10 @@ namespace Autofac.Integration.Wcf.Test
             int serviceBehaviorCount = serviceHost.Description.Behaviors
                 .OfType<AutofacDependencyInjectionServiceBehavior>()
                 .Count();
-            Assert.That(serviceBehaviorCount, Is.EqualTo(0));
+            Assert.Equal(0, serviceBehaviorCount);
         }
 
-        [Test]
+        [Fact]
         public void AddDependencyInjectionBehaviorWithGenericArgument_ContractTypeRegistered_ServiceBehaviorConfigured()
         {
             ContainerBuilder builder = new ContainerBuilder();
@@ -109,7 +107,7 @@ namespace Autofac.Integration.Wcf.Test
             int serviceBehaviorCount = serviceHost.Description.Behaviors
                 .OfType<AutofacDependencyInjectionServiceBehavior>()
                 .Count();
-            Assert.That(serviceBehaviorCount, Is.EqualTo(1));
+            Assert.Equal(1, serviceBehaviorCount);
         }
     }
 

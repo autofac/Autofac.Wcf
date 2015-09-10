@@ -1,129 +1,126 @@
 ﻿using System;
 using System.ServiceModel;
-using Autofac.Integration.Wcf;
-using NUnit.Framework;
+using Xunit;
 
 namespace Autofac.Integration.Wcf.Test
 {
-    [TestFixture]
-    public abstract class AutofacHostFactoryFixtureBase<T> where T : AutofacHostFactory, new()
+    public abstract class AutofacHostFactoryFixtureBase<T>
+        where T : AutofacHostFactory, new()
     {
         readonly Uri[] _dummyEndpoints = new[] { new Uri("http://localhost") };
 
-        [Test]
+        [Fact]
         public void NullConstructorStringThrowsException()
         {
             var factory = new T();
             var exception = Assert.Throws<ArgumentNullException>(() => factory.CreateServiceHost(null, _dummyEndpoints));
-            Assert.That(exception.ParamName, Is.EqualTo("constructorString"));
+            Assert.Equal("constructorString", exception.ParamName);
         }
 
-        [Test]
+        [Fact]
         public void EmptyConstructorStringThrowsException()
         {
             var factory = new T();
             var exception = Assert.Throws<ArgumentException>(() => factory.CreateServiceHost(string.Empty, _dummyEndpoints));
-            Assert.That(exception.ParamName, Is.EqualTo("constructorString"));
+            Assert.Equal("constructorString", exception.ParamName);
         }
 
-        [Test]
+        [Fact]
         public void HostsKeyedServices()
         {
             var builder = new ContainerBuilder();
             builder.RegisterType<object>().Named<object>("service");
             TestWithHostedContainer(builder.Build(), () =>
-            {
-                var factory = new T();
-                var host = factory.CreateServiceHost("service", _dummyEndpoints);
-                Assert.IsNotNull(host);
-            });
+                {
+                    var factory = new T();
+                    var host = factory.CreateServiceHost("service", _dummyEndpoints);
+                    Assert.NotNull(host);
+                });
         }
 
-        [Test]
+        [Fact]
         public void HostsTypedServices()
         {
             var builder = new ContainerBuilder();
             builder.RegisterType<object>();
             TestWithHostedContainer(builder.Build(), () =>
-            {
-                var factory = new T();
-                var host = factory.CreateServiceHost(typeof(object).FullName, _dummyEndpoints);
-                Assert.IsNotNull(host);
-            });
+                {
+                    var factory = new T();
+                    var host = factory.CreateServiceHost(typeof(object).FullName, _dummyEndpoints);
+                    Assert.NotNull(host);
+                });
         }
 
-        [Test]
+        [Fact]
         public void HostsTypedServicesAsServices()
         {
             var builder = new ContainerBuilder();
             builder.Register(c => "Test").As<object>();
             TestWithHostedContainer(builder.Build(), () =>
-            {
-                var factory = new T();
-                var host = factory.CreateServiceHost(typeof(object).FullName, _dummyEndpoints);
-                Assert.IsNotNull(host);
-                Assert.AreEqual(typeof(string), host.Description.ServiceType);
-            });
+                {
+                    var factory = new T();
+                    var host = factory.CreateServiceHost(typeof(object).FullName, _dummyEndpoints);
+                    Assert.NotNull(host);
+                    Assert.Equal(typeof(string), host.Description.ServiceType);
+                });
         }
 
-        [Test]
+        [Fact]
         public void NonSingletonServiceMustNotBeRegisteredAsSingleInstance()
         {
             var builder = new ContainerBuilder();
             builder.RegisterType<object>().SingleInstance();
             TestWithHostedContainer(builder.Build(), () =>
-            {
-                var factory = new T();
-                var exception = Assert.Throws<InvalidOperationException>(
-                    () => factory.CreateServiceHost(typeof(object).FullName, _dummyEndpoints));
-                string expectedMessage = string.Format(AutofacHostFactoryResources.ServiceMustNotBeSingleInstance, typeof(object).FullName);
-                Assert.That(exception.Message, Is.EqualTo(expectedMessage));
-            });
+                {
+                    var factory = new T();
+                    var exception = Assert.Throws<InvalidOperationException>(() => factory.CreateServiceHost(typeof(object).FullName, _dummyEndpoints));
+                    string expectedMessage = string.Format(AutofacHostFactoryResources.ServiceMustNotBeSingleInstance, typeof(object).FullName);
+                    Assert.Equal(expectedMessage, exception.Message);
+                });
         }
 
-        [Test]
+        [Fact]
         public void HostsSingletonServices()
         {
             var builder = new ContainerBuilder();
             builder.RegisterType<TestSingletonService>().SingleInstance();
             TestWithHostedContainer(builder.Build(), () =>
-            {
-                var factory = new T();
-                var host = factory.CreateServiceHost(typeof(TestSingletonService).AssemblyQualifiedName, _dummyEndpoints);
-                Assert.IsNotNull(host);
-                Assert.AreEqual(typeof(TestSingletonService), host.Description.ServiceType);
-            });
+                {
+                    var factory = new T();
+                    var host = factory.CreateServiceHost(typeof(TestSingletonService).AssemblyQualifiedName, _dummyEndpoints);
+                    Assert.NotNull(host);
+                    Assert.Equal(typeof(TestSingletonService), host.Description.ServiceType);
+                });
         }
 
-        [Test]
+        [Fact]
         public void SingletonServiceMustBeRegisteredAsSingleInstance()
         {
             var builder = new ContainerBuilder();
             builder.RegisterType<TestSingletonService>().InstancePerDependency();
             TestWithHostedContainer(builder.Build(), () =>
-            {
-                var factory = new T();
-                var exception = Assert.Throws<InvalidOperationException>(
+                {
+                    var factory = new T();
+                    var exception = Assert.Throws<InvalidOperationException>(
                     () => factory.CreateServiceHost(typeof(TestSingletonService).AssemblyQualifiedName, _dummyEndpoints));
-                string expectedMessage = string.Format(AutofacHostFactoryResources.ServiceMustBeSingleInstance, typeof(TestSingletonService).FullName);
-                Assert.That(exception.Message, Is.EqualTo(expectedMessage));
-            });
+                    string expectedMessage = string.Format(AutofacHostFactoryResources.ServiceMustBeSingleInstance, typeof(TestSingletonService).FullName);
+                    Assert.Equal(expectedMessage, exception.Message);
+                });
         }
 
-        [Test]
-        [ExpectedException(typeof(InvalidOperationException))]
+        [Fact]
         public void DetectsUnknownImplementationTypes()
         {
             var builder = new ContainerBuilder();
             builder.Register<ITestService>(c => new TestService()).Named<object>("service");
             TestWithHostedContainer(builder.Build(), () =>
-            {
-                var factory = new T();
-                factory.CreateServiceHost("service", _dummyEndpoints);
-            });
+                {
+                    var factory = new T();
+                    Assert.Throws<InvalidOperationException>(() => factory.CreateServiceHost("service", _dummyEndpoints));
+                });
         }
 
-        [Test]
+        [Fact]
         public void ExecutesHostConfigurationActionWhenSet()
         {
             try
@@ -141,14 +138,14 @@ namespace Autofac.Integration.Wcf.Test
                 var builder = new ContainerBuilder();
                 builder.RegisterType<object>();
                 TestWithHostedContainer(builder.Build(), () =>
-                {
-                    var factory = new T();
-                    actualHost = factory.CreateServiceHost(typeof(object).FullName, _dummyEndpoints);
-                    Assert.IsNotNull(actualHost);
-                });
+                    {
+                        var factory = new T();
+                        actualHost = factory.CreateServiceHost(typeof(object).FullName, _dummyEndpoints);
+                        Assert.NotNull(actualHost);
+                    });
 
-                Assert.AreSame(hostParameter, actualHost);
-                Assert.IsTrue(actionCalled);
+                Assert.Same(hostParameter, actualHost);
+                Assert.True(actionCalled);
             }
             finally
             {

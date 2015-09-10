@@ -1,33 +1,29 @@
 ﻿using System;
-using System.Linq;
 using System.ServiceModel;
 using System.ServiceModel.Channels;
-using Autofac;
 using Autofac.Core;
-using Autofac.Integration.Wcf;
 using Autofac.Util;
-using NUnit.Framework;
+using Xunit;
 
 namespace Autofac.Integration.Wcf.Test
 {
-    [TestFixture]
     public class AutofacInstanceProviderFixture
     {
-        [Test(Description = "Verifies that you must provide a container from which instances will be resolved.")]
+        [Fact]
         public void Ctor_RequiresContainer()
         {
             var data = new ServiceImplementationData();
             Assert.Throws<ArgumentNullException>(() => new AutofacInstanceProvider(null, data));
         }
 
-        [Test(Description = "Verifies that you must provide data about the service instance to resolve.")]
+        [Fact]
         public void Ctor_RequiresServiceImplementationData()
         {
             var container = new ContainerBuilder().Build();
             Assert.Throws<ArgumentNullException>(() => new AutofacInstanceProvider(container, null));
         }
 
-        [Test(Description = "Ensures you have to provide an instance context to get an instance.")]
+        [Fact]
         public void GetInstance_NullInstanceContext()
         {
             var data = new ServiceImplementationData();
@@ -37,7 +33,7 @@ namespace Autofac.Integration.Wcf.Test
             Assert.Throws<ArgumentNullException>(() => provider.GetInstance(null, message));
         }
 
-        [Test(Description = "Ensures you have to provide an instance context to release an instance.")]
+        [Fact]
         public void ReleaseInstance_NullInstanceContext()
         {
             var data = new ServiceImplementationData();
@@ -47,7 +43,7 @@ namespace Autofac.Integration.Wcf.Test
             Assert.Throws<ArgumentNullException>(() => provider.ReleaseInstance(null, instance));
         }
 
-        [Test]
+        [Fact]
         public void LifetimeScopeDisposedWhenExceptionThrownInServiceConstructor()
         {
             var builder = new ContainerBuilder();
@@ -55,20 +51,23 @@ namespace Autofac.Integration.Wcf.Test
             builder.RegisterType<Disposable>().OnRelease(d => released = true);
             builder.RegisterType<BadService>();
             var container = builder.Build();
-            var data = new ServiceImplementationData {ImplementationResolver = l => l.Resolve<BadService>()};
+            var data = new ServiceImplementationData { ImplementationResolver = l => l.Resolve<BadService>() };
             var provider = new AutofacInstanceProvider(container, data);
             var context = new InstanceContext(new object());
 
             Assert.Throws<DependencyResolutionException>(() => provider.GetInstance(context));
 
-            Assert.IsTrue(released);
+            Assert.True(released);
         }
 
         private class TestMessage : Message
         {
             public override MessageHeaders Headers
             {
-                get { throw new NotImplementedException(); }
+                get
+                {
+                    throw new NotImplementedException();
+                }
             }
 
             protected override void OnWriteBodyContents(System.Xml.XmlDictionaryWriter writer)
@@ -78,12 +77,18 @@ namespace Autofac.Integration.Wcf.Test
 
             public override MessageProperties Properties
             {
-                get { throw new NotImplementedException(); }
+                get
+                {
+                    throw new NotImplementedException();
+                }
             }
 
             public override MessageVersion Version
             {
-                get { throw new NotImplementedException(); }
+                get
+                {
+                    throw new NotImplementedException();
+                }
             }
         }
 
