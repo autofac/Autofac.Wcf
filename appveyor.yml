@@ -17,7 +17,7 @@ before_build:
 - type src\Autofac.Integration.Wcf\Properties\AssemblyInfo.cs
 
 build:
-  verbosity: detailed
+  verbosity: minimal
   publish_nuget: false
   publish_nuget_symbols: false
 
