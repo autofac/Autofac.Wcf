@@ -1,21 +1,23 @@
-version: 4.0.0.{build}
+environment:
+  semantic_version: 4.0.0
+
+version: $(semantic_version).{build}
 
 assembly_info:
   patch: true
   file: '**\AssemblyInfo.*'
-  assembly_version: "4.0.0.0"
-  assembly_file_version: "{version}"
-  assembly_informational_version: "4.0.0-CI-{build}"
+  assembly_version: '$(semantic_version).0'
+  assembly_file_version: '$(appveyor_build_version)'
+  assembly_informational_version: '$(semantic_version)-CI-{build}'
 
 configuration: Release
 
 before_build:
-- nuget help
 - nuget restore
 - type src\Autofac.Integration.Wcf\Properties\AssemblyInfo.cs
 
 build:
-  verbosity: minimal
+  verbosity: detailed
   publish_nuget: false
   publish_nuget_symbols: false
 
