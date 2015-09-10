@@ -14,7 +14,6 @@ configuration: Release
 
 before_build:
 - nuget restore
-- type src\Autofac.Integration.Wcf\Properties\AssemblyInfo.cs
 
 build:
   verbosity: minimal
