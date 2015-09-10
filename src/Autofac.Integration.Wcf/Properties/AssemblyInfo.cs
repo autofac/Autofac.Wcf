@@ -11,3 +11,7 @@ using System.Runtime.InteropServices;
 [assembly: NeutralResourcesLanguage("en-US")]
 [assembly: AssemblyCopyright("Copyright © 2014 Autofac Contributors")]
 [assembly: AssemblyDescription("Autofac Inversion of Control container WCF application integration.")]
+
+[assembly: AssemblyVersionAttribute("4.0.0.0")]
+[assembly: AssemblyFileVersionAttribute("4.0.0.0")]
+[assembly: AssemblyInformationalVersionAttribute("4.0.0.0")]
