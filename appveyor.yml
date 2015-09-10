@@ -9,12 +9,15 @@ assembly_info:
 
 configuration: Release
 
-before_build: nuget restore
+before_build:
+- nuget help
+- nuget restore
+- type src\Autofac.Integration.Wcf\Properties\AssemblyInfo.cs
 
 build:
   verbosity: minimal
-  publish_nuget: true
-  publish_nuget_symbols: true
+  publish_nuget: false
+  publish_nuget_symbols: false
 
 deploy:
 - provider: NuGet
