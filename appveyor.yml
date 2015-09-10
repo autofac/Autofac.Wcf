@@ -1,14 +1,15 @@
 environment:
-  semantic_version: 4.0.0
+  package_semantic_version: 4.0.0
+  assembly_semantic_version: 4.0.0
 
-version: $(semantic_version).{build}
+version: $(package_semantic_version).{build}
 
 assembly_info:
   patch: true
   file: '**\AssemblyInfo.*'
-  assembly_version: '$(semantic_version).0'
+  assembly_version: '$(assembly_semantic_version).0'
   assembly_file_version: '$(appveyor_build_version)'
-  assembly_informational_version: '$(semantic_version)-CI-{build}'
+  assembly_informational_version: '$(package_semantic_version)-CI-{build}'
 
 configuration: Release
 
