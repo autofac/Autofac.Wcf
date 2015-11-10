@@ -1,5 +1,4 @@
-Autofac.Wcf
-===========
+#Autofac.Wcf
 
 Windows Communication Foundation (WCF) integration for [Autofac](http://autofac.org).
 
