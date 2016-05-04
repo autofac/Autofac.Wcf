@@ -16,7 +16,7 @@
 //
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 // EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
-// OF MERCHANTABILITY, FITNESS FOR A1 PARTICULAR PURPOSE AND
+// OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
 // NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
 // HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
@@ -48,6 +48,15 @@ namespace Autofac.Integration.Wcf.Test
             ArgumentNullException exception = Assert.Throws<ArgumentNullException>(
                 () => serviceHost.AddDependencyInjectionBehavior(typeof(IContractType), null));
             Assert.Equal("container", exception.ParamName);
+        }
+
+        [Fact]
+        public void AddDependencyInjectionBehavior_NullParameters_ThrowsException()
+        {
+            ServiceHost serviceHost = new ServiceHost(typeof(ServiceType));
+            ArgumentNullException exception = Assert.Throws<ArgumentNullException>(
+                () => serviceHost.AddDependencyInjectionBehavior(typeof(IContractType), new ContainerBuilder().Build(), null));
+            Assert.Equal("parameters", exception.ParamName);
         }
 
         [Fact]
