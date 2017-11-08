@@ -35,7 +35,8 @@ namespace Autofac.Integration.Wcf
     public static class RegistrationExtensions
     {
         /// <summary>
-        /// Dispose the channel instance in such a way that exceptions 
+        /// Dispose the channel instance in such a way that exceptions aren't thrown
+        /// if a faulted channel is closed.
         /// </summary>
         /// <typeparam name="TLimit">Registration limit type.</typeparam>
         /// <typeparam name="TActivatorData">Activator data type.</typeparam>
@@ -47,6 +48,10 @@ namespace Autofac.Integration.Wcf
             UseWcfSafeRelease<TLimit, TActivatorData, TRegistrationStyle>(
                 this IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> registration)
         {
+            // When a channel is closed in WCF, the Dispose method calls Close internally.
+            // If the channel is in a faulted state, the Close method will throw, yielding
+            // an incorrect exception to be thrown during disposal. This extension fixes
+            // that design problem.
             if (registration == null) throw new ArgumentNullException("registration");
             return registration.OnRelease(CloseChannel);
         }
