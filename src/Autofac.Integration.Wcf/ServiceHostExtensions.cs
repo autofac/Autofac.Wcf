@@ -29,6 +29,7 @@ using System.Globalization;
 using System.Linq;
 using System.ServiceModel;
 using Autofac.Core;
+using System.Collections.Generic;
 
 namespace Autofac.Integration.Wcf
 {
