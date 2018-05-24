@@ -24,6 +24,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.ServiceModel;
@@ -44,8 +45,6 @@ namespace Autofac.Integration.Wcf
         /// <param name="container">The container.</param>
         public static void AddDependencyInjectionBehavior<T>(this ServiceHostBase serviceHost, ILifetimeScope container)
         {
-            if (container == null) throw new ArgumentNullException("container");
-
             AddDependencyInjectionBehavior(serviceHost, typeof(T), container);
         }
 
@@ -56,6 +55,30 @@ namespace Autofac.Integration.Wcf
         /// <param name="contractType">The web service contract type.</param>
         /// <param name="container">The container.</param>
         public static void AddDependencyInjectionBehavior(this ServiceHostBase serviceHost, Type contractType, ILifetimeScope container)
+        {
+            AddDependencyInjectionBehavior(serviceHost, contractType, container, Enumerable.Empty<Parameter>());
+        }
+
+        /// <summary>
+        /// Adds the custom service behavior required for dependency injection.
+        /// </summary>
+        /// <typeparam name="T">The web service contract type.</typeparam>
+        /// <param name="serviceHost">The service host.</param>
+        /// <param name="container">The container.</param>
+        /// <param name="parameters">Parameters for the instance.</param>
+        public static void AddDependencyInjectionBehavior<T>(this ServiceHostBase serviceHost, ILifetimeScope container, IEnumerable<Parameter> parameters)
+        {
+            AddDependencyInjectionBehavior(serviceHost, typeof(T), container, parameters);
+        }
+
+        /// <summary>
+        /// Adds the custom service behavior required for dependency injection.
+        /// </summary>
+        /// <param name="serviceHost">The service host.</param>
+        /// <param name="contractType">The web service contract type.</param>
+        /// <param name="container">The container.</param>
+        /// <param name="parameters">Parameters for the instance.</param>
+        public static void AddDependencyInjectionBehavior(this ServiceHostBase serviceHost, Type contractType, ILifetimeScope container, IEnumerable<Parameter> parameters)
         {
             if (serviceHost == null)
             {
@@ -68,6 +91,10 @@ namespace Autofac.Integration.Wcf
             if (container == null)
             {
                 throw new ArgumentNullException("container");
+            }
+            if (parameters == null)
+            {
+                throw new ArgumentNullException("parameters");
             }
 
             var serviceBehavior = serviceHost.Description.Behaviors.Find<ServiceBehaviorAttribute>();
@@ -84,7 +111,7 @@ namespace Autofac.Integration.Wcf
             {
                 ConstructorString = contractType.AssemblyQualifiedName,
                 ServiceTypeToHost = contractType,
-                ImplementationResolver = l => l.ResolveComponent(registration, Enumerable.Empty<Parameter>())
+                ImplementationResolver = l => l.ResolveComponent(registration, parameters)
             };
 
             var behavior = new AutofacDependencyInjectionServiceBehavior(container, data);

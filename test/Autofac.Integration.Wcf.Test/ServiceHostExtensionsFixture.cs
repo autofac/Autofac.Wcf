@@ -51,6 +51,15 @@ namespace Autofac.Integration.Wcf.Test
         }
 
         [Fact]
+        public void AddDependencyInjectionBehavior_NullParameters_ThrowsException()
+        {
+            ServiceHost serviceHost = new ServiceHost(typeof(ServiceType));
+            ArgumentNullException exception = Assert.Throws<ArgumentNullException>(
+                () => serviceHost.AddDependencyInjectionBehavior(typeof(IContractType), new ContainerBuilder().Build(), null));
+            Assert.Equal("parameters", exception.ParamName);
+        }
+
+        [Fact]
         public void AddDependencyInjectionBehavior_ContractTypeNotRegistered_ThrowsException()
         {
             ServiceHost serviceHost = new ServiceHost(typeof(ServiceType));
