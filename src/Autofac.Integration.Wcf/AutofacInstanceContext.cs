@@ -177,16 +177,15 @@ namespace Autofac.Integration.Wcf
         /// <summary>
         /// Resolve an instance of the provided registration within the context.
         /// </summary>
-        /// <param name="registration">The registration.</param>
-        /// <param name="parameters">Parameters for the instance.</param>
+        /// <param name="request">The resolve request.</param>
         /// <returns>
         /// The component instance.
         /// </returns>
         /// <exception cref="ComponentNotRegisteredException"/>
         /// <exception cref="Autofac.Core.DependencyResolutionException"/>
-        public object ResolveComponent(IComponentRegistration registration, IEnumerable<Parameter> parameters)
+        public object ResolveComponent(ResolveRequest request)
         {
-            return this.OperationLifetime.ResolveComponent(registration, parameters);
+            return this.OperationLifetime.ResolveComponent(request);
         }
 
         /// <summary>

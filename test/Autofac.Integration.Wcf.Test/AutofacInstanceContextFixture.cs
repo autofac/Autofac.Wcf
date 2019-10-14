@@ -50,7 +50,10 @@ namespace Autofac.Integration.Wcf.Test
             IComponentRegistration registration;
             container.ComponentRegistry.TryGetRegistration(new TypedService(typeof(DisposeTracker)), out registration);
             var context = new AutofacInstanceContext(container);
-            var disposable = (DisposeTracker)context.ResolveComponent(registration, Enumerable.Empty<Parameter>());
+            var disposable = (DisposeTracker)context.ResolveComponent(
+                new ResolveRequest(new TypedService(typeof(DisposeTracker)),
+                registration,
+                Enumerable.Empty<Parameter>()));
             Assert.False(disposable.IsDisposedPublic);
             context.Dispose();
             Assert.True(disposable.IsDisposedPublic);

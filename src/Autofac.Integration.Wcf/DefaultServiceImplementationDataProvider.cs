@@ -62,13 +62,17 @@ namespace Autofac.Integration.Wcf
             {
                 throw new InvalidOperationException(AutofacHostFactoryResources.ContainerIsNull);
             }
+
+            Service serviceBeingResolved = new KeyedService(value, typeof(object));
+
             IComponentRegistration registration = null;
-            if (!AutofacHostFactory.Container.ComponentRegistry.TryGetRegistration(new KeyedService(value, typeof(object)), out registration))
+            if (!AutofacHostFactory.Container.ComponentRegistry.TryGetRegistration(serviceBeingResolved, out registration))
             {
                 Type serviceType = Type.GetType(value, false);
                 if (serviceType != null)
                 {
-                    AutofacHostFactory.Container.ComponentRegistry.TryGetRegistration(new TypedService(serviceType), out registration);
+                    serviceBeingResolved = new TypedService(serviceType);
+                    AutofacHostFactory.Container.ComponentRegistry.TryGetRegistration(serviceBeingResolved, out registration);
                 }
             }
 
@@ -81,7 +85,7 @@ namespace Autofac.Integration.Wcf
             {
                 ConstructorString = value,
                 ServiceTypeToHost = registration.Activator.LimitType,
-                ImplementationResolver = l => l.ResolveComponent(registration, Enumerable.Empty<Parameter>())
+                ImplementationResolver = l => l.ResolveComponent(new ResolveRequest(serviceBeingResolved, registration, Enumerable.Empty<Parameter>()))
             };
 
             var implementationType = registration.Activator.LimitType;

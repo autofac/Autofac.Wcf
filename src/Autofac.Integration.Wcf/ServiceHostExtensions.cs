@@ -102,7 +102,9 @@ namespace Autofac.Integration.Wcf
                 return;
 
             IComponentRegistration registration;
-            if (!container.ComponentRegistry.TryGetRegistration(new TypedService(contractType), out registration))
+            var serviceToResolve = new TypedService(contractType);
+
+            if (!container.ComponentRegistry.TryGetRegistration(serviceToResolve, out registration))
             {
                 var message = string.Format(CultureInfo.CurrentCulture, ServiceHostExtensionsResources.ContractTypeNotRegistered, contractType.FullName);
                 throw new ArgumentException(message, "contractType");
@@ -111,7 +113,7 @@ namespace Autofac.Integration.Wcf
             {
                 ConstructorString = contractType.AssemblyQualifiedName,
                 ServiceTypeToHost = contractType,
-                ImplementationResolver = l => l.ResolveComponent(registration, parameters)
+                ImplementationResolver = l => l.ResolveComponent(new ResolveRequest(serviceToResolve, registration, parameters))
             };
 
             var behavior = new AutofacDependencyInjectionServiceBehavior(container, data);
