@@ -2,7 +2,7 @@ version: $(package_semantic_version).{build}
 
 configuration: Release
 
-os: Visual Studio 2017
+os: Visual Studio 2019
 
 environment:
   package_semantic_version: 5.0.0
