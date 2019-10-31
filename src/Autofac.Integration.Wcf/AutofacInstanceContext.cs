@@ -25,7 +25,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.ServiceModel;
+using System.ServiceModel.Web;
 using Autofac.Core;
 using Autofac.Core.Registration;
 
@@ -103,7 +105,17 @@ namespace Autofac.Integration.Wcf
             {
                 throw new ArgumentNullException("container");
             }
-            this.OperationLifetime = container.BeginLifetimeScope();
+            this.OperationLifetime = container.BeginLifetimeScope((builder) =>
+            {
+                var jitModules = container.ResolveOptional<IPerInstanceContextJitModuleContainer>();
+                if (jitModules != null && jitModules.Modules != null && jitModules.Modules.Any())
+                {
+                    foreach (var module in jitModules.Modules)
+                    {
+                        builder.RegisterModule(module);
+                    }
+                }
+            });
         }
 
         /// <summary>

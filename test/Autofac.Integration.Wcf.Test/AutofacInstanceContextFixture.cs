@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Autofac.Core;
 using Autofac.Util;
@@ -61,6 +62,40 @@ namespace Autofac.Integration.Wcf.Test
         {
             var context = new AutofacInstanceContext(new ContainerBuilder().Build());
             Assert.Throws<ArgumentNullException>(() => context.Resolve(null));
+        }
+
+        [Fact]
+        public void Resolve_ResolvesJustInTimeRegisteredModules()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterType<PerInstanceContextJitModuleContainer>()
+                   .As<IPerInstanceContextJitModuleContainer>();
+            var container = builder.Build();
+            var context = new AutofacInstanceContext(container);
+            var jitService = context.OperationLifetime.Resolve<IExampleJitService>();
+            Assert.NotNull(jitService);
+        }
+
+        private interface IExampleJitService {
+            int Id { get; }
+        }
+        private class ExampleJitService : IExampleJitService
+        {
+            public int Id { get; set; }
+        }
+        private class WcfPerIntanceContextModule : Module
+        {
+            protected override void Load(ContainerBuilder builder)
+            {
+                builder.RegisterType<ExampleJitService>()
+                       .As<IExampleJitService>()
+                       .SingleInstance();
+            }
+        }
+
+        public class PerInstanceContextJitModuleContainer : IPerInstanceContextJitModuleContainer
+        {
+            public IEnumerable<IModule> Modules { get; } = new[] { new WcfPerIntanceContextModule() };
         }
 
         private class DisposeTracker : Disposable
