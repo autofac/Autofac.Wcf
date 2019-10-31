@@ -76,13 +76,16 @@ namespace Autofac.Integration.Wcf.Test
             Assert.NotNull(jitService);
         }
 
-        private interface IExampleJitService {
+        private interface IExampleJitService
+        {
             int Id { get; }
         }
+
         private class ExampleJitService : IExampleJitService
         {
             public int Id { get; set; }
         }
+
         private class WcfPerIntanceContextModule : Module
         {
             protected override void Load(ContainerBuilder builder)
