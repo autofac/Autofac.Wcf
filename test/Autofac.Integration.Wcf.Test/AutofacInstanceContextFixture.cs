@@ -68,12 +68,36 @@ namespace Autofac.Integration.Wcf.Test
         public void Resolve_ResolvesJustInTimeRegisteredModules()
         {
             var builder = new ContainerBuilder();
-            builder.RegisterType<PerInstanceContextJitModuleContainer>()
-                   .As<IPerInstanceContextJitModuleContainer>();
+            var accessor = new PerInstanceContextModuleAccessor
+            {
+                Modules = new[] { new WcfPerIntanceContextModule() }
+            };
+            builder.RegisterInstance(accessor).As<IPerInstanceContextModuleAccessor>();
             var container = builder.Build();
+            AutofacInstanceContext.JustInTimeModuleRegistration = true;
             var context = new AutofacInstanceContext(container);
             var jitService = context.OperationLifetime.Resolve<IExampleJitService>();
             Assert.NotNull(jitService);
+        }
+
+        [Fact]
+        public void Resolve_JustInTimeModulesRegistrationHandlesNullModules()
+        {
+            var builder = new ContainerBuilder();
+            var accessor = new PerInstanceContextModuleAccessor(); 
+            builder.RegisterInstance(accessor).As<IPerInstanceContextModuleAccessor>();
+            var container = builder.Build();
+            var context = new AutofacInstanceContext(container);
+            Assert.NotNull(context);
+        }
+
+        [Fact]
+        public void Resolve_JustInTimeRegisteredModulesHandlesResolveOptionalNull()
+        {
+            var builder = new ContainerBuilder();
+            var container = builder.Build();
+            var context = new AutofacInstanceContext(container);
+            Assert.NotNull(context);
         }
 
         private interface IExampleJitService
@@ -96,9 +120,9 @@ namespace Autofac.Integration.Wcf.Test
             }
         }
 
-        public class PerInstanceContextJitModuleContainer : IPerInstanceContextJitModuleContainer
+        public class PerInstanceContextModuleAccessor : IPerInstanceContextModuleAccessor
         {
-            public IEnumerable<IModule> Modules { get; } = new[] { new WcfPerIntanceContextModule() };
+            public IEnumerable<IModule> Modules { get; set; }
         }
 
         private class DisposeTracker : Disposable
