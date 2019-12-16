@@ -105,7 +105,7 @@ namespace Autofac.Integration.Wcf
             {
                 throw new ArgumentNullException("container");
             }
-            this.OperationLifetime = container.BeginLifetimeScope((builder) =>
+            this.OperationLifetime = container.BeginLifetimeScope("WcfRequest", (builder) =>
             {
                 var jitModules = container.ResolveOptional<IPerInstanceContextJitModuleContainer>();
                 if (jitModules != null && jitModules.Modules != null && jitModules.Modules.Any())
