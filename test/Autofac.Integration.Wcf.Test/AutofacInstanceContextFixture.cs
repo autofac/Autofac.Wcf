@@ -65,7 +65,7 @@ namespace Autofac.Integration.Wcf.Test
         }
 
         [Fact]
-        public void Resolve_ResolvesJustInTimeRegisteredModules()
+        public void Resolve_ResolvesInstanceContextRegisteredModules()
         {
             var builder = new ContainerBuilder();
             var accessor = new PerInstanceContextModuleAccessor
@@ -74,14 +74,14 @@ namespace Autofac.Integration.Wcf.Test
             };
             builder.RegisterInstance(accessor).As<IPerInstanceContextModuleAccessor>();
             var container = builder.Build();
-            AutofacInstanceContext.JustInTimeModuleRegistration = true;
+            AutofacHostFactory.Features |= Features.InstancePerContextModules;
             var context = new AutofacInstanceContext(container);
-            var jitService = context.OperationLifetime.Resolve<IExampleJitService>();
-            Assert.NotNull(jitService);
+            var service = context.OperationLifetime.Resolve<IExampleService>();
+            Assert.NotNull(service);
         }
 
         [Fact]
-        public void Resolve_JustInTimeModulesRegistrationHandlesNullModules()
+        public void Resolve_InstanceContextModulesRegistrationHandlesNullModules()
         {
             var builder = new ContainerBuilder();
             var accessor = new PerInstanceContextModuleAccessor(); 
@@ -92,7 +92,7 @@ namespace Autofac.Integration.Wcf.Test
         }
 
         [Fact]
-        public void Resolve_JustInTimeRegisteredModulesHandlesResolveOptionalNull()
+        public void Resolve_InstanceContextRegisteredModulesHandlesResolveOptionalNull()
         {
             var builder = new ContainerBuilder();
             var container = builder.Build();
@@ -100,12 +100,12 @@ namespace Autofac.Integration.Wcf.Test
             Assert.NotNull(context);
         }
 
-        private interface IExampleJitService
+        private interface IExampleService
         {
             int Id { get; }
         }
 
-        private class ExampleJitService : IExampleJitService
+        private class ExampleService : IExampleService
         {
             public int Id { get; set; }
         }
@@ -114,8 +114,8 @@ namespace Autofac.Integration.Wcf.Test
         {
             protected override void Load(ContainerBuilder builder)
             {
-                builder.RegisterType<ExampleJitService>()
-                       .As<IExampleJitService>()
+                builder.RegisterType<ExampleService>()
+                       .As<IExampleService>()
                        .SingleInstance();
             }
         }

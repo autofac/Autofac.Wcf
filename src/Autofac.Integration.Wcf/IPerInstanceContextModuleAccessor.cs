@@ -4,8 +4,8 @@ using System.Collections.Generic;
 namespace Autofac.Integration.Wcf
 {
     /// <summary>
-    /// A list of just in time (JIT) registrations. This allows for the
-    /// current <see cref="System.ServiceModel.OperationContext"/>
+    /// A list of module registrations. This allows for the current
+    /// <see cref="System.ServiceModel.OperationContext"/>
     /// or <see cref="System.ServiceModel.Web.WebOperationContext"/>
     /// or any item that is static per
     /// <see cref="System.ServiceModel.InstanceContext"/>

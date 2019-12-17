@@ -27,7 +27,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.ServiceModel;
-using System.ServiceModel.Web;
 using Autofac.Core;
 using Autofac.Core.Registration;
 
@@ -84,11 +83,6 @@ namespace Autofac.Integration.Wcf
         }
 
         /// <summary>
-        /// A feature flag or enabled or disabling just-in-time module registration.
-        /// </summary>
-        public static bool JustInTimeModuleRegistration { get; set; }
-
-        /// <summary>
         /// Gets the request/operation lifetime.
         /// </summary>
         /// <value>
@@ -110,16 +104,14 @@ namespace Autofac.Integration.Wcf
             {
                 throw new ArgumentNullException("container");
             }
-            this.OperationLifetime = !JustInTimeModuleRegistration
+            this.OperationLifetime = !AutofacHostFactory.Features.HasFlag(Features.InstancePerContextModules)
                 ? container.BeginLifetimeScope()
-                : container.BeginLifetimeScope(
-                    MatchingScopeLifetimeTags.WcfRequestLifetimeScopeTag,
-                    (builder) =>
+                : container.BeginLifetimeScope((builder) =>
                     {
-                        var jitModules = container.ResolveOptional<IPerInstanceContextModuleAccessor>();
-                        if (jitModules != null && jitModules.Modules != null && jitModules.Modules.Any())
+                        var modules = container.ResolveOptional<IPerInstanceContextModuleAccessor>();
+                        if (modules != null && modules.Modules != null && modules.Modules.Any())
                         {
-                            foreach (var module in jitModules.Modules)
+                            foreach (var module in modules.Modules)
                             {
                                 builder.RegisterModule(module);
                             }
