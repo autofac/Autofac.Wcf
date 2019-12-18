@@ -87,6 +87,11 @@ namespace Autofac.Integration.Wcf
         public static IServiceImplementationDataProvider ServiceImplementationDataProvider { get; set; }
 
         /// <summary>
+        /// Gets or sets <see cref="Autofac.Integration.Wcf.Features"/> flags.
+        /// </summary>
+        public static Features Features { get; set; }
+
+        /// <summary>
         /// Creates a <see cref="System.ServiceModel.ServiceHost"/> with specific base addresses and initializes it with specified data.
         /// </summary>
         /// <param name="constructorString">The initialization data passed to the <see cref="System.ServiceModel.ServiceHostBase"/> instance being constructed by the factory.</param>

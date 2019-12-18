@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Autofac.Core;
 using Autofac.Util;
@@ -64,6 +65,67 @@ namespace Autofac.Integration.Wcf.Test
         {
             var context = new AutofacInstanceContext(new ContainerBuilder().Build());
             Assert.Throws<ArgumentNullException>(() => context.Resolve(null));
+        }
+
+        [Fact]
+        public void Resolve_ResolvesInstanceContextRegisteredModules()
+        {
+            var builder = new ContainerBuilder();
+            var accessor = new PerInstanceContextModuleAccessor
+            {
+                Modules = new[] { new WcfPerIntanceContextModule() }
+            };
+            builder.RegisterInstance(accessor).As<IPerInstanceContextModuleAccessor>();
+            var container = builder.Build();
+            AutofacHostFactory.Features |= Features.InstancePerContextModules;
+            var context = new AutofacInstanceContext(container);
+            var service = context.OperationLifetime.Resolve<IExampleService>();
+            Assert.NotNull(service);
+        }
+
+        [Fact]
+        public void Resolve_InstanceContextModulesRegistrationHandlesNullModules()
+        {
+            var builder = new ContainerBuilder();
+            var accessor = new PerInstanceContextModuleAccessor(); 
+            builder.RegisterInstance(accessor).As<IPerInstanceContextModuleAccessor>();
+            var container = builder.Build();
+            var context = new AutofacInstanceContext(container);
+            Assert.NotNull(context);
+        }
+
+        [Fact]
+        public void Resolve_InstanceContextRegisteredModulesHandlesResolveOptionalNull()
+        {
+            var builder = new ContainerBuilder();
+            var container = builder.Build();
+            var context = new AutofacInstanceContext(container);
+            Assert.NotNull(context);
+        }
+
+        private interface IExampleService
+        {
+            int Id { get; }
+        }
+
+        private class ExampleService : IExampleService
+        {
+            public int Id { get; set; }
+        }
+
+        private class WcfPerIntanceContextModule : Module
+        {
+            protected override void Load(ContainerBuilder builder)
+            {
+                builder.RegisterType<ExampleService>()
+                       .As<IExampleService>()
+                       .SingleInstance();
+            }
+        }
+
+        public class PerInstanceContextModuleAccessor : IPerInstanceContextModuleAccessor
+        {
+            public IEnumerable<IModule> Modules { get; set; }
         }
 
         private class DisposeTracker : Disposable
