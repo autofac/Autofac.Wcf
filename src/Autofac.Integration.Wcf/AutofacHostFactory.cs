@@ -143,7 +143,7 @@ namespace Autofac.Integration.Wcf
 
             if (data.ServiceTypeToHost == null)
             {
-                throw new InvalidOperationException(String.Format(CultureInfo.CurrentUICulture, AutofacHostFactoryResources.NoServiceTypeToHost, dataProvider.GetType(), constructorString));
+                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, AutofacHostFactoryResources.NoServiceTypeToHost, dataProvider.GetType(), constructorString));
             }
             if (!data.ServiceTypeToHost.IsClass)
             {
