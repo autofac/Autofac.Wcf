@@ -65,18 +65,18 @@ namespace Autofac.Integration.Wcf
 
             Service serviceBeingResolved = new KeyedService(value, typeof(object));
 
-            IComponentRegistration registration = null;
-            if (!AutofacHostFactory.Container.ComponentRegistry.TryGetRegistration(serviceBeingResolved, out registration))
+            ServiceRegistration serviceRegistration;
+            if (!AutofacHostFactory.Container.ComponentRegistry.TryGetServiceRegistration(serviceBeingResolved, out serviceRegistration))
             {
                 Type serviceType = Type.GetType(value, false);
                 if (serviceType != null)
                 {
                     serviceBeingResolved = new TypedService(serviceType);
-                    AutofacHostFactory.Container.ComponentRegistry.TryGetRegistration(serviceBeingResolved, out registration);
+                    AutofacHostFactory.Container.ComponentRegistry.TryGetServiceRegistration(serviceBeingResolved, out serviceRegistration);
                 }
             }
 
-            if (registration == null)
+            if (serviceRegistration == null)
             {
                 throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, AutofacHostFactoryResources.ServiceNotRegistered, value));
             }
@@ -84,14 +84,14 @@ namespace Autofac.Integration.Wcf
             var data = new ServiceImplementationData
             {
                 ConstructorString = value,
-                ServiceTypeToHost = registration.Activator.LimitType,
-                ImplementationResolver = l => l.ResolveComponent(new ResolveRequest(serviceBeingResolved, registration, Enumerable.Empty<Parameter>()))
+                ServiceTypeToHost = serviceRegistration.Registration.Activator.LimitType,
+                ImplementationResolver = l => l.ResolveComponent(new ResolveRequest(serviceBeingResolved, serviceRegistration, Enumerable.Empty<Parameter>()))
             };
 
-            var implementationType = registration.Activator.LimitType;
+            var implementationType = serviceRegistration.Registration.Activator.LimitType;
             if (IsSingletonWcfService(implementationType))
             {
-                if (!IsRegistrationSingleInstance(registration))
+                if (!IsRegistrationSingleInstance(serviceRegistration.Registration))
                 {
                     throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, AutofacHostFactoryResources.ServiceMustBeSingleInstance, implementationType.FullName));
                 }
@@ -100,7 +100,7 @@ namespace Autofac.Integration.Wcf
             }
             else
             {
-                if (IsRegistrationSingleInstance(registration))
+                if (IsRegistrationSingleInstance(serviceRegistration.Registration))
                 {
                     throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, AutofacHostFactoryResources.ServiceMustNotBeSingleInstance, implementationType.FullName));
                 }
