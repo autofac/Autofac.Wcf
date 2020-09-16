@@ -1,4 +1,7 @@
-﻿using System;
+﻿// Copyright (c) Autofac Project. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+
+using System;
 using System.ServiceModel;
 using Xunit;
 
@@ -7,7 +10,7 @@ namespace Autofac.Integration.Wcf.Test
     public abstract class AutofacHostFactoryFixtureBase<T>
         where T : AutofacHostFactory, new()
     {
-        readonly Uri[] _dummyEndpoints = new[] { new Uri("http://localhost") };
+        private readonly Uri[] _dummyEndpoints = { new Uri("http://localhost") };
 
         [Fact]
         public void NullConstructorStringThrowsException()
@@ -127,7 +130,7 @@ namespace Autofac.Integration.Wcf.Test
             {
                 ServiceHostBase hostParameter = null;
                 ServiceHostBase actualHost = null;
-                bool actionCalled = false;
+                var actionCalled = false;
 
                 AutofacHostFactory.HostConfigurationAction = host =>
                 {
@@ -153,7 +156,7 @@ namespace Autofac.Integration.Wcf.Test
             }
         }
 
-        static void TestWithHostedContainer(IContainer container, Action test)
+        private static void TestWithHostedContainer(IContainer container, Action test)
         {
             AutofacHostFactory.Container = container;
             try

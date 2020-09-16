@@ -1,27 +1,5 @@
-﻿// This software is part of the Autofac IoC container
-// Copyright © 2011 Autofac Contributors
-// https://autofac.org
-//
-// Permission is hereby granted, free of charge, to any person
-// obtaining a copy of this software and associated documentation
-// files (the "Software"), to deal in the Software without
-// restriction, including without limitation the rights to use,
-// copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the
-// Software is furnished to do so, subject to the following
-// conditions:
-//
-// The above copyright notice and this permission notice shall be
-// included in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
-// OF MERCHANTABILITY, FITNESS FOR A1 PARTICULAR PURPOSE AND
-// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-// HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-// WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-// OTHER DEALINGS IN THE SOFTWARE.
+﻿// Copyright (c) Autofac Project. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System;
 using System.Linq;
@@ -35,7 +13,7 @@ namespace Autofac.Integration.Wcf.Test
         [Fact]
         public void AddDependencyInjectionBehavior_NullContractType_ThrowsException()
         {
-            ServiceHost serviceHost = new ServiceHost(typeof(ServiceType));
+            var serviceHost = new ServiceHost(typeof(ServiceType));
             ArgumentNullException exception = Assert.Throws<ArgumentNullException>(
                 () => serviceHost.AddDependencyInjectionBehavior(null, new ContainerBuilder().Build()));
             Assert.Equal("contractType", exception.ParamName);
@@ -44,8 +22,8 @@ namespace Autofac.Integration.Wcf.Test
         [Fact]
         public void AddDependencyInjectionBehavior_NullContainer_ThrowsException()
         {
-            ServiceHost serviceHost = new ServiceHost(typeof(ServiceType));
-            ArgumentNullException exception = Assert.Throws<ArgumentNullException>(
+            var serviceHost = new ServiceHost(typeof(ServiceType));
+            var exception = Assert.Throws<ArgumentNullException>(
                 () => serviceHost.AddDependencyInjectionBehavior(typeof(IContractType), null));
             Assert.Equal("container", exception.ParamName);
         }
@@ -53,8 +31,8 @@ namespace Autofac.Integration.Wcf.Test
         [Fact]
         public void AddDependencyInjectionBehavior_NullParameters_ThrowsException()
         {
-            ServiceHost serviceHost = new ServiceHost(typeof(ServiceType));
-            ArgumentNullException exception = Assert.Throws<ArgumentNullException>(
+            var serviceHost = new ServiceHost(typeof(ServiceType));
+            var exception = Assert.Throws<ArgumentNullException>(
                 () => serviceHost.AddDependencyInjectionBehavior(typeof(IContractType), new ContainerBuilder().Build(), null));
             Assert.Equal("parameters", exception.ParamName);
         }
@@ -62,26 +40,26 @@ namespace Autofac.Integration.Wcf.Test
         [Fact]
         public void AddDependencyInjectionBehavior_ContractTypeNotRegistered_ThrowsException()
         {
-            ServiceHost serviceHost = new ServiceHost(typeof(ServiceType));
-            Type contractType = typeof(IContractType);
-            ArgumentException exception = Assert.Throws<ArgumentException>(
+            var serviceHost = new ServiceHost(typeof(ServiceType));
+            var contractType = typeof(IContractType);
+            var exception = Assert.Throws<ArgumentException>(
                 () => serviceHost.AddDependencyInjectionBehavior(contractType, new ContainerBuilder().Build()));
             Assert.Equal("contractType", exception.ParamName);
-            string message = string.Format(ServiceHostExtensionsResources.ContractTypeNotRegistered, contractType.FullName);
+            var message = string.Format(ServiceHostExtensionsResources.ContractTypeNotRegistered, contractType.FullName);
             Assert.Contains(message, exception.Message);
         }
 
         [Fact]
         public void AddDependencyInjectionBehavior_ContractTypeRegistered_ServiceBehaviorConfigured()
         {
-            ContainerBuilder builder = new ContainerBuilder();
+            var builder = new ContainerBuilder();
             builder.Register(c => new ServiceType()).As<IContractType>();
             IContainer container = builder.Build();
 
-            ServiceHost serviceHost = new ServiceHost(typeof(ServiceType));
+            var serviceHost = new ServiceHost(typeof(ServiceType));
             serviceHost.AddDependencyInjectionBehavior(typeof(IContractType), container);
 
-            int serviceBehaviorCount = serviceHost.Description.Behaviors
+            var serviceBehaviorCount = serviceHost.Description.Behaviors
                 .OfType<AutofacDependencyInjectionServiceBehavior>()
                 .Count();
             Assert.Equal(1, serviceBehaviorCount);
@@ -90,14 +68,14 @@ namespace Autofac.Integration.Wcf.Test
         [Fact]
         public void AddDependencyInjectionBehavior_SingleInstanceContextMode_ServiceBehaviorIgnored()
         {
-            ContainerBuilder builder = new ContainerBuilder();
+            var builder = new ContainerBuilder();
             builder.Register(c => new SingletonServiceType()).As<IContractType>();
-            IContainer container = builder.Build();
+            var container = builder.Build();
 
-            ServiceHost serviceHost = new ServiceHost(typeof(SingletonServiceType));
+            var serviceHost = new ServiceHost(typeof(SingletonServiceType));
             serviceHost.AddDependencyInjectionBehavior(typeof(IContractType), container);
 
-            int serviceBehaviorCount = serviceHost.Description.Behaviors
+            var serviceBehaviorCount = serviceHost.Description.Behaviors
                 .OfType<AutofacDependencyInjectionServiceBehavior>()
                 .Count();
             Assert.Equal(0, serviceBehaviorCount);
@@ -106,30 +84,30 @@ namespace Autofac.Integration.Wcf.Test
         [Fact]
         public void AddDependencyInjectionBehaviorWithGenericArgument_ContractTypeRegistered_ServiceBehaviorConfigured()
         {
-            ContainerBuilder builder = new ContainerBuilder();
+            var builder = new ContainerBuilder();
             builder.Register(c => new ServiceType()).As<IContractType>();
-            IContainer container = builder.Build();
+            var container = builder.Build();
 
-            ServiceHost serviceHost = new ServiceHost(typeof(ServiceType));
+            var serviceHost = new ServiceHost(typeof(ServiceType));
             serviceHost.AddDependencyInjectionBehavior<IContractType>(container);
 
-            int serviceBehaviorCount = serviceHost.Description.Behaviors
+            var serviceBehaviorCount = serviceHost.Description.Behaviors
                 .OfType<AutofacDependencyInjectionServiceBehavior>()
                 .Count();
             Assert.Equal(1, serviceBehaviorCount);
         }
     }
 
-    interface IContractType
+    internal interface IContractType
     {
     }
 
-    class ServiceType : IContractType
+    internal class ServiceType : IContractType
     {
     }
 
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
-    class SingletonServiceType : IContractType
+    internal class SingletonServiceType : IContractType
     {
     }
 }

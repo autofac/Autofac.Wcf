@@ -1,6 +1,10 @@
-﻿using System;
+﻿// Copyright (c) Autofac Project. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+
+using System;
 using System.ServiceModel;
 using System.ServiceModel.Channels;
+using System.Xml;
 using Autofac.Core;
 using Autofac.Util;
 using Xunit;
@@ -39,7 +43,7 @@ namespace Autofac.Integration.Wcf.Test
             var data = new ServiceImplementationData();
             var container = new ContainerBuilder().Build();
             var provider = new AutofacInstanceProvider(container, data);
-            object instance = new object();
+            var instance = new object();
             Assert.Throws<ArgumentNullException>(() => provider.ReleaseInstance(null, instance));
         }
 
@@ -62,43 +66,18 @@ namespace Autofac.Integration.Wcf.Test
 
         private class TestMessage : Message
         {
-            public override MessageHeaders Headers
-            {
-                get
-                {
-                    throw new NotImplementedException();
-                }
-            }
+            public override MessageHeaders Headers => throw new NotImplementedException();
 
-            protected override void OnWriteBodyContents(System.Xml.XmlDictionaryWriter writer)
-            {
-                throw new NotImplementedException();
-            }
+            protected override void OnWriteBodyContents(XmlDictionaryWriter writer) => throw new NotImplementedException();
 
-            public override MessageProperties Properties
-            {
-                get
-                {
-                    throw new NotImplementedException();
-                }
-            }
+            public override MessageProperties Properties => throw new NotImplementedException();
 
-            public override MessageVersion Version
-            {
-                get
-                {
-                    throw new NotImplementedException();
-                }
-            }
+            public override MessageVersion Version => throw new NotImplementedException();
         }
 
-        class BadService
+        internal class BadService
         {
-            // ReSharper disable once UnusedParameter.Local
-            public BadService(Disposable disposable)
-            {
-                throw new Exception("Boom!!!");
-            }
+            public BadService(Disposable _) => throw new Exception("Boom!!!");
         }
     }
 }

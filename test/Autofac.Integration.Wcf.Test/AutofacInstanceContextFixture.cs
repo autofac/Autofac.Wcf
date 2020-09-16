@@ -1,4 +1,7 @@
-﻿using System;
+﻿// Copyright (c) Autofac Project. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Autofac.Core;
@@ -48,8 +51,7 @@ namespace Autofac.Integration.Wcf.Test
             var builder = new ContainerBuilder();
             builder.RegisterType<DisposeTracker>();
             var container = builder.Build();
-            ServiceRegistration registration;
-            container.ComponentRegistry.TryGetServiceRegistration(new TypedService(typeof(DisposeTracker)), out registration);
+            container.ComponentRegistry.TryGetServiceRegistration(new TypedService(typeof(DisposeTracker)), out var registration);
             var context = new AutofacInstanceContext(container);
             var disposable = (DisposeTracker)context.ResolveComponent(
                 new ResolveRequest(new TypedService(typeof(DisposeTracker)),
@@ -115,12 +117,10 @@ namespace Autofac.Integration.Wcf.Test
 
         private class WcfPerIntanceContextModule : Module
         {
-            protected override void Load(ContainerBuilder builder)
-            {
+            protected override void Load(ContainerBuilder builder) =>
                 builder.RegisterType<ExampleService>()
-                       .As<IExampleService>()
-                       .SingleInstance();
-            }
+                    .As<IExampleService>()
+                    .SingleInstance();
         }
 
         public class PerInstanceContextModuleAccessor : IPerInstanceContextModuleAccessor
@@ -130,13 +130,7 @@ namespace Autofac.Integration.Wcf.Test
 
         private class DisposeTracker : Disposable
         {
-            public bool IsDisposedPublic
-            {
-                get
-                {
-                    return this.IsDisposed;
-                }
-            }
+            public bool IsDisposedPublic => this.IsDisposed;
         }
     }
 }

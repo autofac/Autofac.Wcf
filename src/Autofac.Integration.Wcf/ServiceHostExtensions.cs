@@ -1,27 +1,5 @@
-﻿// This software is part of the Autofac IoC container
-// Copyright © 2011 Autofac Contributors
-// https://autofac.org
-//
-// Permission is hereby granted, free of charge, to any person
-// obtaining a copy of this software and associated documentation
-// files (the "Software"), to deal in the Software without
-// restriction, including without limitation the rights to use,
-// copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the
-// Software is furnished to do so, subject to the following
-// conditions:
-//
-// The above copyright notice and this permission notice shall be
-// included in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
-// OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-// HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-// WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-// OTHER DEALINGS IN THE SOFTWARE.
+﻿// Copyright (c) Autofac Project. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System;
 using System.Collections.Generic;
@@ -43,10 +21,8 @@ namespace Autofac.Integration.Wcf
         /// <typeparam name="T">The web service contract type.</typeparam>
         /// <param name="serviceHost">The service host.</param>
         /// <param name="container">The container.</param>
-        public static void AddDependencyInjectionBehavior<T>(this ServiceHostBase serviceHost, ILifetimeScope container)
-        {
+        public static void AddDependencyInjectionBehavior<T>(this ServiceHostBase serviceHost, ILifetimeScope container) =>
             AddDependencyInjectionBehavior(serviceHost, typeof(T), container);
-        }
 
         /// <summary>
         /// Adds the custom service behavior required for dependency injection.
@@ -54,10 +30,8 @@ namespace Autofac.Integration.Wcf
         /// <param name="serviceHost">The service host.</param>
         /// <param name="contractType">The web service contract type.</param>
         /// <param name="container">The container.</param>
-        public static void AddDependencyInjectionBehavior(this ServiceHostBase serviceHost, Type contractType, ILifetimeScope container)
-        {
+        public static void AddDependencyInjectionBehavior(this ServiceHostBase serviceHost, Type contractType, ILifetimeScope container) =>
             AddDependencyInjectionBehavior(serviceHost, contractType, container, Enumerable.Empty<Parameter>());
-        }
 
         /// <summary>
         /// Adds the custom service behavior required for dependency injection.
@@ -66,10 +40,8 @@ namespace Autofac.Integration.Wcf
         /// <param name="serviceHost">The service host.</param>
         /// <param name="container">The container.</param>
         /// <param name="parameters">Parameters for the instance.</param>
-        public static void AddDependencyInjectionBehavior<T>(this ServiceHostBase serviceHost, ILifetimeScope container, IEnumerable<Parameter> parameters)
-        {
+        public static void AddDependencyInjectionBehavior<T>(this ServiceHostBase serviceHost, ILifetimeScope container, IEnumerable<Parameter> parameters) =>
             AddDependencyInjectionBehavior(serviceHost, typeof(T), container, parameters);
-        }
 
         /// <summary>
         /// Adds the custom service behavior required for dependency injection.
@@ -82,33 +54,39 @@ namespace Autofac.Integration.Wcf
         {
             if (serviceHost == null)
             {
-                throw new ArgumentNullException("serviceHost");
+                throw new ArgumentNullException(nameof(serviceHost));
             }
+
             if (contractType == null)
             {
-                throw new ArgumentNullException("contractType");
+                throw new ArgumentNullException(nameof(contractType));
             }
+
             if (container == null)
             {
-                throw new ArgumentNullException("container");
+                throw new ArgumentNullException(nameof(container));
             }
+
             if (parameters == null)
             {
-                throw new ArgumentNullException("parameters");
+                throw new ArgumentNullException(nameof(parameters));
             }
 
             var serviceBehavior = serviceHost.Description.Behaviors.Find<ServiceBehaviorAttribute>();
             if (serviceBehavior != null && serviceBehavior.InstanceContextMode == InstanceContextMode.Single)
+            {
                 return;
+            }
 
-            ServiceRegistration serviceRegistration;
             var serviceToResolve = new TypedService(contractType);
+            ServiceRegistration serviceRegistration;
 
             if (!container.ComponentRegistry.TryGetServiceRegistration(serviceToResolve, out serviceRegistration))
             {
                 var message = string.Format(CultureInfo.CurrentCulture, ServiceHostExtensionsResources.ContractTypeNotRegistered, contractType.FullName);
-                throw new ArgumentException(message, "contractType");
+                throw new ArgumentException(message, nameof(contractType));
             }
+
             var data = new ServiceImplementationData
             {
                 ConstructorString = contractType.AssemblyQualifiedName,
