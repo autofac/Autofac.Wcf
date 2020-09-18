@@ -1,34 +1,10 @@
-﻿// This software is part of the Autofac IoC container
-// Copyright © 2011 Autofac Contributors
-// https://autofac.org
-//
-// Permission is hereby granted, free of charge, to any person
-// obtaining a copy of this software and associated documentation
-// files (the "Software"), to deal in the Software without
-// restriction, including without limitation the rights to use,
-// copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the
-// Software is furnished to do so, subject to the following
-// conditions:
-//
-// The above copyright notice and this permission notice shall be
-// included in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
-// OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-// HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-// WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-// OTHER DEALINGS IN THE SOFTWARE.
+﻿// Copyright (c) Autofac Project. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.ServiceModel;
 using Autofac.Core;
-using Autofac.Core.Registration;
 
 namespace Autofac.Integration.Wcf
 {
@@ -50,17 +26,17 @@ namespace Autofac.Integration.Wcf
         private bool _disposed;
 
         /// <summary>
-        /// Gets the current <see cref="Autofac.Integration.Wcf.AutofacInstanceContext"/>
+        /// Gets the current <see cref="AutofacInstanceContext"/>
         /// for the operation.
         /// </summary>
         /// <value>
-        /// The <see cref="Autofac.Integration.Wcf.AutofacInstanceContext"/> associated
-        /// with the current <see cref="System.ServiceModel.OperationContext"/> if
+        /// The <see cref="AutofacInstanceContext"/> associated
+        /// with the current <see cref="OperationContext"/> if
         /// one exists; or <see langword="null" /> if there isn't one.
         /// </value>
         /// <remarks>
         /// <para>
-        /// In a singleton service, there won't be a current <see cref="Autofac.Integration.Wcf.AutofacInstanceContext"/>
+        /// In a singleton service, there won't be a current <see cref="AutofacInstanceContext"/>
         /// because singleton services are resolved at the time the service host begins
         /// rather than on each operation.
         /// </para>
@@ -70,15 +46,8 @@ namespace Autofac.Integration.Wcf
             get
             {
                 var operationContext = OperationContext.Current;
-                if (operationContext != null)
-                {
-                    var instanceContext = operationContext.InstanceContext;
-                    if (instanceContext != null)
-                    {
-                        return instanceContext.Extensions.Find<AutofacInstanceContext>();
-                    }
-                }
-                return null;
+                var instanceContext = operationContext?.InstanceContext;
+                return instanceContext?.Extensions.Find<AutofacInstanceContext>();
             }
         }
 
@@ -86,10 +55,10 @@ namespace Autofac.Integration.Wcf
         /// Gets the request/operation lifetime.
         /// </summary>
         /// <value>
-        /// An <see cref="Autofac.ILifetimeScope"/> that this instance
+        /// An <see cref="ILifetimeScope"/> that this instance
         /// context will use to resolve service instances.
         /// </value>
-        public ILifetimeScope OperationLifetime { get; private set; }
+        public ILifetimeScope OperationLifetime { get; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AutofacInstanceContext"/> class.
@@ -102,14 +71,15 @@ namespace Autofac.Integration.Wcf
         {
             if (container == null)
             {
-                throw new ArgumentNullException("container");
+                throw new ArgumentNullException(nameof(container));
             }
+
             this.OperationLifetime = !AutofacHostFactory.Features.HasFlag(Features.InstancePerContextModules)
                 ? container.BeginLifetimeScope()
-                : container.BeginLifetimeScope((builder) =>
+                : container.BeginLifetimeScope(builder =>
                     {
                         var modules = container.ResolveOptional<IPerInstanceContextModuleAccessor>();
-                        if (modules != null && modules.Modules != null && modules.Modules.Any())
+                        if (modules?.Modules != null && modules.Modules.Any())
                         {
                             foreach (var module in modules.Modules)
                             {
@@ -122,15 +92,12 @@ namespace Autofac.Integration.Wcf
         /// <summary>
         /// Finalizes an instance of the <see cref="AutofacInstanceContext"/> class.
         /// </summary>
-        ~AutofacInstanceContext()
-        {
-            this.Dispose(false);
-        }
+        ~AutofacInstanceContext() => this.Dispose(false);
 
         /// <summary>
         /// Enables an extension object to find out when it has been aggregated.
         /// Called when the extension is added to the
-        /// <see cref="System.ServiceModel.IExtensibleObject{T}.Extensions"/> property.
+        /// <see cref="IExtensibleObject{T}.Extensions"/> property.
         /// </summary>
         /// <param name="owner">The extensible object that aggregates this extension.</param>
         public void Attach(InstanceContext owner)
@@ -140,7 +107,7 @@ namespace Autofac.Integration.Wcf
         /// <summary>
         /// Enables an object to find out when it is no longer aggregated.
         /// Called when an extension is removed from the
-        /// <see cref="System.ServiceModel.IExtensibleObject{T}.Extensions"/> property.
+        /// <see cref="IExtensibleObject{T}.Extensions"/> property.
         /// </summary>
         /// <param name="owner">The extensible object that aggregates this extension.</param>
         public void Detach(InstanceContext owner)
@@ -162,11 +129,11 @@ namespace Autofac.Integration.Wcf
         /// </summary>
         /// <param name="disposing">
         /// <see langword="true" /> to dispose of managed resources (during a manual execution
-        /// of <see cref="Autofac.Integration.Wcf.AutofacInstanceContext.Dispose()"/>); or
+        /// of <see cref="Dispose()"/>); or
         /// <see langword="false" /> if this is getting run as part of finalization where
         /// managed resources may have already been cleaned up.
         /// </param>
-        private void Dispose(bool disposing)
+        protected virtual void Dispose(bool disposing)
         {
             if (!this._disposed)
             {
@@ -175,31 +142,16 @@ namespace Autofac.Integration.Wcf
                     // Free managed resources
                     this.OperationLifetime.Dispose();
                 }
+
                 this._disposed = true;
             }
         }
 
-        /// <summary>
-        /// Associates services with the components that provide them.
-        /// </summary>
-        public IComponentRegistry ComponentRegistry
-        {
-            get { return this.OperationLifetime.ComponentRegistry; }
-        }
+        /// <inheritdoc />
+        public IComponentRegistry ComponentRegistry => this.OperationLifetime.ComponentRegistry;
 
-        /// <summary>
-        /// Resolve an instance of the provided registration within the context.
-        /// </summary>
-        /// <param name="request">The resolve request.</param>
-        /// <returns>
-        /// The component instance.
-        /// </returns>
-        /// <exception cref="ComponentNotRegisteredException"/>
-        /// <exception cref="Autofac.Core.DependencyResolutionException"/>
-        public object ResolveComponent(ResolveRequest request)
-        {
-            return this.OperationLifetime.ResolveComponent(request);
-        }
+        /// <inheritdoc />
+        public object ResolveComponent(ResolveRequest request) => this.OperationLifetime.ResolveComponent(request);
 
         /// <summary>
         /// Retrieve a service instance from the context.
@@ -209,15 +161,16 @@ namespace Autofac.Integration.Wcf
         /// implementation instance.
         /// </param>
         /// <returns>The service instance.</returns>
-        /// <exception cref="System.ArgumentNullException">
+        /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="serviceData" /> is <see langword="null" />.
         /// </exception>
         public object Resolve(ServiceImplementationData serviceData)
         {
             if (serviceData == null)
             {
-                throw new ArgumentNullException("serviceData");
+                throw new ArgumentNullException(nameof(serviceData));
             }
+
             return serviceData.ImplementationResolver(this.OperationLifetime);
         }
     }

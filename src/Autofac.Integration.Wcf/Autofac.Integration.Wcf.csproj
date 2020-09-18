@@ -1,121 +1,81 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{4D5C02D1-C10A-4448-9D7B-8F2A5CCA1D13}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Autofac.Integration.Wcf</RootNamespace>
-    <AssemblyName>Autofac.Integration.Wcf</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
+    <TargetFramework>net472</TargetFramework>
     <SignAssembly>true</SignAssembly>
+    <!-- VersionPrefix patched by AppVeyor -->
+    <VersionPrefix>0.0.1</VersionPrefix>
     <AssemblyOriginatorKeyFile>..\..\Autofac.snk</AssemblyOriginatorKeyFile>
-    <TargetFrameworkProfile />
+    <CodeAnalysisRuleSet>..\..\build\Analyzers.ruleset</CodeAnalysisRuleSet>
+    <RepositoryUrl>https://github.com/autofac/Autofac.Wcf</RepositoryUrl>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <PackageIcon>icon.png</PackageIcon>
+    <PackageProjectUrl>https://autofac.org</PackageProjectUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReleaseNotes>Release notes are at https://github.com/autofac/Autofac.Wcf/releases</PackageReleaseNotes>
+    <Features>IOperation</Features>
+    <PackageId>Autofac.Wcf</PackageId>
+    <AssemblyName>Autofac.Integration.Wcf</AssemblyName>
+    <Authors>Autofac Contributors</Authors>
+    <Company>Autofac</Company>
+    <Product>Autofac</Product>
+    <NeutralLanguage>en-US</NeutralLanguage>
+    <Description>Windows Communication Foundation integration for Autofac</Description>
+    <Copyright>Copyright © 2014 Autofac Contributors</Copyright>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <CodeAnalysisRuleSet>../../build/Analyzers.ruleset</CodeAnalysisRuleSet>
+    <EmbedAllSources>true</EmbedAllSources>
+    <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <CodeAnalysisRuleSet>..\..\Full.ruleset</CodeAnalysisRuleSet>
-    <RunCodeAnalysis>true</RunCodeAnalysis>
-    <DocumentationFile>bin\Debug\Autofac.Integration.Wcf.xml</DocumentationFile>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <DebugSymbols>true</DebugSymbols>
-    <CodeAnalysisRuleSet>..\..\Full.ruleset</CodeAnalysisRuleSet>
-    <RunCodeAnalysis>true</RunCodeAnalysis>
-    <DocumentationFile>bin\Release\Autofac.Integration.Wcf.xml</DocumentationFile>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
+
   <ItemGroup>
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.ServiceModel" />
-    <Reference Include="System.ServiceModel.Activation" />
-    <Reference Include="System.ServiceModel.Web" />
-    <Reference Include="System.Xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <CodeAnalysisDictionary Include="..\..\CodeAnalysisDictionary.xml">
-      <Link>CodeAnalysisDictionary.xml</Link>
-    </CodeAnalysisDictionary>
-    <Compile Include="AutofacDependencyInjectionServiceBehavior.cs" />
-    <Compile Include="AutofacInstanceContext.cs" />
-    <Compile Include="AutofacInstanceProvider.cs" />
-    <Compile Include="AutofacServiceHostFactory.cs" />
-    <Compile Include="AutofacHostFactoryResources.Designer.cs">
+    <Compile Update="AutofacControllerConfigurationAttributeResources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>AutofacHostFactoryResources.resx</DependentUpon>
+      <DependentUpon>AutofacControllerConfigurationAttributeResources.resx</DependentUpon>
     </Compile>
-    <Compile Include="AutofacWebServiceHostFactory.cs" />
-    <Compile Include="AutofacHostFactory.cs" />
-    <Compile Include="DefaultServiceImplementationDataProvider.cs" />
-    <Compile Include="Features.cs" />
-    <Compile Include="IPerInstanceContextModuleAccessor.cs" />
-    <Compile Include="IServiceImplementationDataProvider.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Properties\Resources.Designer.cs">
+    <Compile Update="RegistrationExtensionsResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>RegistrationExtensionsResources.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="RegistrationExtensions.cs" />
-    <Compile Include="ServiceHostExtensions.cs" />
-    <Compile Include="ServiceHostExtensionsResources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>ServiceHostExtensionsResources.resx</DependentUpon>
-    </Compile>
-    <Compile Include="ServiceImplementationData.cs" />
   </ItemGroup>
+
   <ItemGroup>
-    <EmbeddedResource Include="AutofacHostFactoryResources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>AutofacHostFactoryResources.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ServiceHostExtensionsResources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>ServiceHostExtensionsResources.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
+    <None Include="..\..\build\icon.png" Pack="true" PackagePath="\" />
   </ItemGroup>
+
   <ItemGroup>
-    <None Include="Autofac.Integration.Wcf.nuspec" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.ServiceModel.Activation" />
+    <Reference Include="System.ServiceModel.Web" />
   </ItemGroup>
+
   <ItemGroup>
-    <PackageReference Include="Autofac">
-      <Version>5.0.0</Version>
+    <PackageReference Include="Autofac" Version="6.0.0-develop-01134" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.0">
+      <PrivateAssets>All</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="3.3.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" Condition="Exists('$(MSBuildThisFileDirectory)../../.git')">
+      <PrivateAssets>All</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.113">
+      <PrivateAssets>All</PrivateAssets>
     </PackageReference>
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+      <_Parameter1>Autofac.Integration.Wcf.Test, PublicKey=00240000048000009400000006020000002400005253413100040000010001008728425885ef385e049261b18878327dfaaf0d666dea3bd2b0e4f18b33929ad4e5fbc9087e7eda3c1291d2de579206d9b4292456abffbe8be6c7060b36da0c33b883e3878eaf7c89fddf29e6e27d24588e81e86f3a22dd7b1a296b5f06fbfb500bbd7410faa7213ef4e2ce7622aefc03169b0324bcd30ccfe9ac8204e4960be6</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
 </Project>

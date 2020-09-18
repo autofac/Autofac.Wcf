@@ -1,4 +1,7 @@
-﻿using System;
+﻿// Copyright (c) Autofac Project. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+
+using System;
 using System.Collections.Generic;
 using System.ServiceModel;
 using System.ServiceModel.Description;
@@ -40,10 +43,8 @@ namespace Autofac.Integration.Wcf.Test
 
         private class TestHost : ServiceHostBase
         {
-            protected override System.ServiceModel.Description.ServiceDescription CreateDescription(out IDictionary<string, System.ServiceModel.Description.ContractDescription> implementedContracts)
-            {
+            protected override ServiceDescription CreateDescription(out IDictionary<string, ContractDescription> implementedContracts) =>
                 throw new NotImplementedException();
-            }
         }
     }
 }

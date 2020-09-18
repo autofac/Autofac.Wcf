@@ -1,7 +1,4 @@
-﻿using System.Reflection;
-using Xunit;
-
-[assembly: AssemblyTitle("Autofac.Integration.Wcf.Test")]
+﻿using Xunit;
 
 // We can't run tests in parallel because many tests depend
 // on the global static AutofacHostFactory.Container.
