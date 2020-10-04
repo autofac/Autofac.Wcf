@@ -1,27 +1,5 @@
-﻿// This software is part of the Autofac IoC container
-// Copyright © 2011 Autofac Contributors
-// https://autofac.org
-//
-// Permission is hereby granted, free of charge, to any person
-// obtaining a copy of this software and associated documentation
-// files (the "Software"), to deal in the Software without
-// restriction, including without limitation the rights to use,
-// copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the
-// Software is furnished to do so, subject to the following
-// conditions:
-//
-// The above copyright notice and this permission notice shall be
-// included in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
-// OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-// HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-// WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-// OTHER DEALINGS IN THE SOFTWARE.
+﻿// Copyright (c) Autofac Project. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System;
 using System.Collections.ObjectModel;
@@ -41,7 +19,6 @@ namespace Autofac.Integration.Wcf
         private readonly ILifetimeScope _rootLifetimeScope;
         private readonly ServiceImplementationData _serviceData;
 
-
         /// <summary>
         /// Initializes a new instance of the <see cref="AutofacDependencyInjectionServiceBehavior"/> class.
         /// </summary>
@@ -52,22 +29,13 @@ namespace Autofac.Integration.Wcf
         /// Data about which service type should be hosted and how to resolve
         /// the type to use for the service implementation.
         /// </param>
-        /// <exception cref="System.ArgumentNullException">
+        /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="rootLifetimeScope" /> or <paramref name="serviceData" /> is <see langword="null" />.
         /// </exception>
         public AutofacDependencyInjectionServiceBehavior(ILifetimeScope rootLifetimeScope, ServiceImplementationData serviceData)
         {
-            if (rootLifetimeScope == null)
-            {
-                throw new ArgumentNullException("rootLifetimeScope");
-            }
-            if (serviceData == null)
-            {
-                throw new ArgumentNullException("serviceData");
-            }
-
-            _rootLifetimeScope = rootLifetimeScope;
-            _serviceData = serviceData;
+            _rootLifetimeScope = rootLifetimeScope ?? throw new ArgumentNullException(nameof(rootLifetimeScope));
+            _serviceData = serviceData ?? throw new ArgumentNullException(nameof(serviceData));
         }
 
         /// <summary>
@@ -87,8 +55,10 @@ namespace Autofac.Integration.Wcf
         /// <param name="endpoints">The service endpoints.</param>
         /// <param name="bindingParameters">Custom objects to which binding elements have access.</param>
         public void AddBindingParameters(
-            ServiceDescription serviceDescription, ServiceHostBase serviceHostBase,
-            Collection<ServiceEndpoint> endpoints, BindingParameterCollection bindingParameters)
+            ServiceDescription serviceDescription,
+            ServiceHostBase serviceHostBase,
+            Collection<ServiceEndpoint> endpoints,
+            BindingParameterCollection bindingParameters)
         {
         }
 
@@ -105,11 +75,12 @@ namespace Autofac.Integration.Wcf
         {
             if (serviceDescription == null)
             {
-                throw new ArgumentNullException("serviceDescription");
+                throw new ArgumentNullException(nameof(serviceDescription));
             }
+
             if (serviceHostBase == null)
             {
-                throw new ArgumentNullException("serviceHostBase");
+                throw new ArgumentNullException(nameof(serviceHostBase));
             }
 
             var implementedContracts =

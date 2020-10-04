@@ -1,5 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿// Copyright (c) Autofac Project. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+
+using System;
 using System.Globalization;
 using System.Linq;
 using System.ServiceModel;
@@ -23,7 +25,7 @@ namespace Autofac.Integration.Wcf
         /// implementation.
         /// </param>
         /// <returns>
-        /// A <see cref="Autofac.Integration.Wcf.ServiceImplementationData"/>
+        /// A <see cref="ServiceImplementationData"/>
         /// object containing information about which type to use in
         /// the service host and which type to use to resolve the implementation.
         /// </returns>
@@ -35,29 +37,31 @@ namespace Autofac.Integration.Wcf
         /// service host as well as the implementation type.
         /// </para>
         /// </remarks>
-        /// <exception cref="System.InvalidOperationException">
-        /// Thrown if the <see cref="Autofac.Integration.Wcf.AutofacHostFactory.Container"/>
+        /// <exception cref="InvalidOperationException">
+        /// Thrown if the <see cref="AutofacHostFactory.Container"/>
         /// is <see langword="null" />;
         /// if the service indicated by <paramref name="value" />
-        /// is not registered with the <see cref="Autofac.Integration.Wcf.AutofacHostFactory.Container"/>;
+        /// is not registered with the <see cref="AutofacHostFactory.Container"/>;
         /// or if the service is a singleton that isn't registered as a singleton.
         /// </exception>
-        /// <exception cref="System.ArgumentNullException">
+        /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="value" /> is <see langword="null" />.
         /// </exception>
-        /// <exception cref="System.ArgumentException">
+        /// <exception cref="ArgumentException">
         /// Thrown if <paramref name="value" /> is empty.
         /// </exception>
         public virtual ServiceImplementationData GetServiceImplementationData(string value)
         {
             if (value == null)
             {
-                throw new ArgumentNullException("value");
+                throw new ArgumentNullException(nameof(value));
             }
+
             if (value.Length == 0)
             {
-                throw new ArgumentException(String.Format(CultureInfo.CurrentCulture, Properties.Resources.ArgumentException_StringEmpty, "value"));
+                throw new ArgumentException(string.Format(CultureInfo.CurrentCulture, Resources.ArgumentException_StringEmpty, nameof(value)));
             }
+
             if (AutofacHostFactory.Container == null)
             {
                 throw new InvalidOperationException(AutofacHostFactoryResources.ContainerIsNull);
@@ -65,56 +69,54 @@ namespace Autofac.Integration.Wcf
 
             Service serviceBeingResolved = new KeyedService(value, typeof(object));
 
-            IComponentRegistration registration = null;
-            if (!AutofacHostFactory.Container.ComponentRegistry.TryGetRegistration(serviceBeingResolved, out registration))
+            ServiceRegistration serviceRegistration;
+            if (!AutofacHostFactory.Container.ComponentRegistry.TryGetServiceRegistration(serviceBeingResolved, out serviceRegistration))
             {
-                Type serviceType = Type.GetType(value, false);
+                var serviceType = Type.GetType(value, false);
                 if (serviceType != null)
                 {
                     serviceBeingResolved = new TypedService(serviceType);
-                    AutofacHostFactory.Container.ComponentRegistry.TryGetRegistration(serviceBeingResolved, out registration);
+                    AutofacHostFactory.Container.ComponentRegistry.TryGetServiceRegistration(serviceBeingResolved, out serviceRegistration);
                 }
             }
 
-            if (registration == null)
+            if (serviceRegistration == null)
             {
-                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, AutofacHostFactoryResources.ServiceNotRegistered, value));
+                throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, AutofacHostFactoryResources.ServiceNotRegistered, value));
             }
 
             var data = new ServiceImplementationData
             {
                 ConstructorString = value,
-                ServiceTypeToHost = registration.Activator.LimitType,
-                ImplementationResolver = l => l.ResolveComponent(new ResolveRequest(serviceBeingResolved, registration, Enumerable.Empty<Parameter>()))
+                ServiceTypeToHost = serviceRegistration.Registration.Activator.LimitType,
+                ImplementationResolver = l => l.ResolveComponent(new ResolveRequest(serviceBeingResolved, serviceRegistration, Enumerable.Empty<Parameter>()))
             };
 
-            var implementationType = registration.Activator.LimitType;
+            var implementationType = serviceRegistration.Registration.Activator.LimitType;
             if (IsSingletonWcfService(implementationType))
             {
-                if (!IsRegistrationSingleInstance(registration))
+                if (!IsRegistrationSingleInstance(serviceRegistration.Registration))
                 {
-                    throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, AutofacHostFactoryResources.ServiceMustBeSingleInstance, implementationType.FullName));
+                    throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, AutofacHostFactoryResources.ServiceMustBeSingleInstance, implementationType.FullName));
                 }
 
                 data.HostAsSingleton = true;
             }
             else
             {
-                if (IsRegistrationSingleInstance(registration))
+                if (IsRegistrationSingleInstance(serviceRegistration.Registration))
                 {
-                    throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, AutofacHostFactoryResources.ServiceMustNotBeSingleInstance, implementationType.FullName));
+                    throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, AutofacHostFactoryResources.ServiceMustNotBeSingleInstance, implementationType.FullName));
                 }
             }
 
             return data;
         }
 
-        static bool IsRegistrationSingleInstance(IComponentRegistration registration)
-        {
-            return registration.Sharing == InstanceSharing.Shared && registration.Lifetime is RootScopeLifetime;
-        }
+        private static bool IsRegistrationSingleInstance(IComponentRegistration registration) =>
+            registration.Sharing == InstanceSharing.Shared && registration.Lifetime is RootScopeLifetime;
 
-        static bool IsSingletonWcfService(Type implementationType)
+        private static bool IsSingletonWcfService(Type implementationType)
         {
             var behavior = implementationType
                 .GetCustomAttributes(typeof(ServiceBehaviorAttribute), true)
