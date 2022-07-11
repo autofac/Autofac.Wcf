@@ -124,6 +124,17 @@ namespace Autofac.Integration.Wcf.Test
         }
 
         [Fact]
+        public void DetectsUnknownServiceTypes()
+        {
+            var builder = new ContainerBuilder();
+            TestWithHostedContainer(builder.Build(), () =>
+                {
+                    var factory = new T();
+                    Assert.Throws<InvalidOperationException>(() => factory.CreateServiceHost("service", _dummyEndpoints));
+                });
+        }
+
+        [Fact]
         public void ExecutesHostConfigurationActionWhenSet()
         {
             try
