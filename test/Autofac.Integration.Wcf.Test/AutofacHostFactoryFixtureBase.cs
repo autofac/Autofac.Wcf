@@ -127,6 +127,7 @@ namespace Autofac.Integration.Wcf.Test
         public void DetectsUnknownServiceTypes()
         {
             var builder = new ContainerBuilder();
+            // No service registered at all.
             TestWithHostedContainer(builder.Build(), () =>
                 {
                     var factory = new T();
