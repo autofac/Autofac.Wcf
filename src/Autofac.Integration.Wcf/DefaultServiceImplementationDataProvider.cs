@@ -80,7 +80,7 @@ namespace Autofac.Integration.Wcf
                 }
             }
 
-            if (serviceRegistration == null)
+            if (serviceRegistration == null || serviceRegistration == default)
             {
                 throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, AutofacHostFactoryResources.ServiceNotRegistered, value));
             }
