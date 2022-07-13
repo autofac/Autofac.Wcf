@@ -72,7 +72,7 @@ public class AutofacInstanceContext : IExtension<InstanceContext>, IDisposable, 
             throw new ArgumentNullException(nameof(container));
         }
 
-        this.OperationLifetime = !AutofacHostFactory.Features.HasFlag(Features.InstancePerContextModules)
+        OperationLifetime = !AutofacHostFactory.Features.HasFlag(Features.InstancePerContextModules)
             ? container.BeginLifetimeScope()
             : container.BeginLifetimeScope(builder =>
                 {
@@ -90,7 +90,7 @@ public class AutofacInstanceContext : IExtension<InstanceContext>, IDisposable, 
     /// <summary>
     /// Finalizes an instance of the <see cref="AutofacInstanceContext"/> class.
     /// </summary>
-    ~AutofacInstanceContext() => this.Dispose(false);
+    ~AutofacInstanceContext() => Dispose(false);
 
     /// <summary>
     /// Enables an extension object to find out when it has been aggregated.
@@ -118,7 +118,7 @@ public class AutofacInstanceContext : IExtension<InstanceContext>, IDisposable, 
     /// </summary>
     public void Dispose()
     {
-        this.Dispose(true);
+        Dispose(true);
         GC.SuppressFinalize(this);
     }
 
@@ -133,23 +133,23 @@ public class AutofacInstanceContext : IExtension<InstanceContext>, IDisposable, 
     /// </param>
     protected virtual void Dispose(bool disposing)
     {
-        if (!this._disposed)
+        if (!_disposed)
         {
             if (disposing)
             {
                 // Free managed resources
-                this.OperationLifetime.Dispose();
+                OperationLifetime.Dispose();
             }
 
-            this._disposed = true;
+            _disposed = true;
         }
     }
 
     /// <inheritdoc />
-    public IComponentRegistry ComponentRegistry => this.OperationLifetime.ComponentRegistry;
+    public IComponentRegistry ComponentRegistry => OperationLifetime.ComponentRegistry;
 
     /// <inheritdoc />
-    public object ResolveComponent(ResolveRequest request) => this.OperationLifetime.ResolveComponent(request);
+    public object ResolveComponent(ResolveRequest request) => OperationLifetime.ResolveComponent(request);
 
     /// <summary>
     /// Retrieve a service instance from the context.
@@ -169,6 +169,6 @@ public class AutofacInstanceContext : IExtension<InstanceContext>, IDisposable, 
             throw new ArgumentNullException(nameof(serviceData));
         }
 
-        return serviceData.ImplementationResolver!(this.OperationLifetime);
+        return serviceData.ImplementationResolver!(OperationLifetime);
     }
 }

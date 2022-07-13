@@ -127,6 +127,6 @@ public class AutofacInstanceContextFixture
 
     private class DisposeTracker : Disposable
     {
-        public bool IsDisposedPublic => this.IsDisposed;
+        public bool IsDisposedPublic => IsDisposed;
     }
 }

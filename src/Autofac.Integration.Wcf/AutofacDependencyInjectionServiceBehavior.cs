@@ -65,7 +65,7 @@ public class AutofacDependencyInjectionServiceBehavior : IServiceBehavior
     /// </summary>
     /// <param name="serviceDescription">The service description.</param>
     /// <param name="serviceHostBase">The host that is currently being built.</param>
-    /// <exception cref="System.ArgumentNullException">
+    /// <exception cref="ArgumentNullException">
     /// Thrown if <paramref name="serviceDescription" /> or
     /// <paramref name="serviceHostBase" /> is <see langword="null" />.
     /// </exception>
