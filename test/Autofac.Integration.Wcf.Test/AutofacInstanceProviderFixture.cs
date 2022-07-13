@@ -1,13 +1,11 @@
 ﻿// Copyright (c) Autofac Project. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
-using System;
 using System.ServiceModel;
 using System.ServiceModel.Channels;
 using System.Xml;
 using Autofac.Core;
 using Autofac.Util;
-using Xunit;
 
 namespace Autofac.Integration.Wcf.Test
 {
