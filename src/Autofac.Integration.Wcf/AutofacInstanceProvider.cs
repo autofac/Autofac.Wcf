@@ -53,7 +53,7 @@ namespace Autofac.Integration.Wcf
         /// Thrown if <paramref name="instanceContext" /> is <see langword="null" />.
         /// </exception>
         [SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "Dispose ownership transferred to another object")]
-        public object GetInstance(InstanceContext instanceContext, Message message)
+        public object GetInstance(InstanceContext instanceContext, Message? message)
         {
             if (instanceContext == null)
             {

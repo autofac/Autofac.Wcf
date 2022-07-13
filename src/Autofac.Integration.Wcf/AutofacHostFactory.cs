@@ -39,7 +39,7 @@ namespace Autofac.Integration.Wcf
         /// An <see cref="ILifetimeScope"/> that will be used to resolve service
         /// implementation instances.
         /// </value>
-        public static ILifetimeScope Container { get; set; }
+        public static ILifetimeScope? Container { get; set; }
 
         /// <summary>
         /// Gets or sets an action that can be used to programmatically configure
@@ -51,7 +51,7 @@ namespace Autofac.Integration.Wcf
         /// behaviors or otherwise modify the host before it gets returned by
         /// the factory.
         /// </value>
-        public static Action<ServiceHostBase> HostConfigurationAction { get; set; }
+        public static Action<ServiceHostBase>? HostConfigurationAction { get; set; }
 
         /// <summary>
         /// Gets or sets the service implementation data strategy.
@@ -61,7 +61,7 @@ namespace Autofac.Integration.Wcf
         /// that will be used to determine the proper service implementation given
         /// a service constructor string.
         /// </value>
-        public static IServiceImplementationDataProvider ServiceImplementationDataProvider { get; set; }
+        public static IServiceImplementationDataProvider? ServiceImplementationDataProvider { get; set; }
 
         /// <summary>
         /// Gets or sets <see cref="Wcf.Features"/> flags.
@@ -129,7 +129,7 @@ namespace Autofac.Integration.Wcf
             ServiceHost host;
             if (data.HostAsSingleton)
             {
-                var singletonInstance = data.ImplementationResolver(Container);
+                var singletonInstance = data.ImplementationResolver!(Container);
                 host = CreateSingletonServiceHost(singletonInstance, baseAddresses);
             }
             else

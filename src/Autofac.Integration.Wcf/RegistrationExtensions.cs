@@ -40,7 +40,11 @@ namespace Autofac.Integration.Wcf
 
         private static void CloseChannel<T>(T channel)
         {
-            var communicationObject = (ICommunicationObject)channel;
+            if (channel is not ICommunicationObject communicationObject)
+            {
+                return;
+            }
+
             try
             {
                 if (communicationObject.State == CommunicationState.Faulted)

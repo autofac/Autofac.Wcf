@@ -77,7 +77,7 @@ namespace Autofac.Integration.Wcf.Test
 
         internal class BadService
         {
-            public BadService(Disposable _) => throw new Exception("Boom!!!");
+            public BadService(Disposable item) => throw new Exception("Boom!!!");
         }
     }
 }

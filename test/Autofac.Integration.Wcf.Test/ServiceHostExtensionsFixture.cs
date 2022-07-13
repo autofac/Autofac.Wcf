@@ -96,18 +96,18 @@ namespace Autofac.Integration.Wcf.Test
                 .Count();
             Assert.Equal(1, serviceBehaviorCount);
         }
-    }
 
-    internal interface IContractType
-    {
-    }
+        internal interface IContractType
+        {
+        }
 
-    internal class ServiceType : IContractType
-    {
-    }
+        internal class ServiceType : IContractType
+        {
+        }
 
-    [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
-    internal class SingletonServiceType : IContractType
-    {
+        [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
+        internal class SingletonServiceType : IContractType
+        {
+        }
     }
 }

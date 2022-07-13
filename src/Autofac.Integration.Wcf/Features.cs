@@ -22,7 +22,7 @@ namespace Autofac.Integration.Wcf
         /// Enables InstancePerContextModules, which allows for modules to be registered
         /// when an <see cref="AutofacInstanceContext"/> is instantiated.
         /// </summary>
-        InstancePerContextModules = 1
+        InstancePerContextModules = 1,
 
         // Next will be 2, then 4, and so on in powers of two.
     }

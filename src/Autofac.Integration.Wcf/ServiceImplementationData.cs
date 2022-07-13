@@ -25,7 +25,7 @@ namespace Autofac.Integration.Wcf
         /// A <see cref="string"/> used to generate this service
         /// implementation data.
         /// </value>
-        public string ConstructorString { get; set; }
+        public string? ConstructorString { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether the service should be hosted as a singleton.
@@ -43,7 +43,7 @@ namespace Autofac.Integration.Wcf
         /// service host when it is initially created. This type must be a concrete
         /// class and not an interface.
         /// </value>
-        public Type ServiceTypeToHost { get; set; }
+        public Type? ServiceTypeToHost { get; set; }
 
         /// <summary>
         /// Gets or sets a mechanism that allows the <see cref="AutofacInstanceContext"/>
@@ -55,7 +55,7 @@ namespace Autofac.Integration.Wcf
         /// given service. This is the object that the service host will use
         /// and should be assignable from the <see cref="ServiceTypeToHost"/>.
         /// </value>
-        public Func<ILifetimeScope, object> ImplementationResolver
+        public Func<ILifetimeScope, object>? ImplementationResolver
         {
             get;
             set;

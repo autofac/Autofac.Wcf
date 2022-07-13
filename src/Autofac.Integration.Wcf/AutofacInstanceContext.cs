@@ -41,7 +41,7 @@ namespace Autofac.Integration.Wcf
         /// rather than on each operation.
         /// </para>
         /// </remarks>
-        public static AutofacInstanceContext Current
+        public static AutofacInstanceContext? Current
         {
             get
             {
@@ -171,7 +171,7 @@ namespace Autofac.Integration.Wcf
                 throw new ArgumentNullException(nameof(serviceData));
             }
 
-            return serviceData.ImplementationResolver(this.OperationLifetime);
+            return serviceData.ImplementationResolver!(this.OperationLifetime);
         }
     }
 }

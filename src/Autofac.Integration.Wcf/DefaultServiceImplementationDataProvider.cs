@@ -68,9 +68,7 @@ namespace Autofac.Integration.Wcf
             }
 
             Service serviceBeingResolved = new KeyedService(value, typeof(object));
-
-            ServiceRegistration serviceRegistration;
-            if (!AutofacHostFactory.Container.ComponentRegistry.TryGetServiceRegistration(serviceBeingResolved, out serviceRegistration))
+            if (!AutofacHostFactory.Container.ComponentRegistry.TryGetServiceRegistration(serviceBeingResolved, out ServiceRegistration serviceRegistration))
             {
                 var serviceType = Type.GetType(value, false);
                 if (serviceType != null)
@@ -80,7 +78,7 @@ namespace Autofac.Integration.Wcf
                 }
             }
 
-            if (serviceRegistration == null || serviceRegistration == default)
+            if (serviceRegistration == default)
             {
                 throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, AutofacHostFactoryResources.ServiceNotRegistered, value));
             }
@@ -89,7 +87,7 @@ namespace Autofac.Integration.Wcf
             {
                 ConstructorString = value,
                 ServiceTypeToHost = serviceRegistration.Registration.Activator.LimitType,
-                ImplementationResolver = l => l.ResolveComponent(new ResolveRequest(serviceBeingResolved, serviceRegistration, Enumerable.Empty<Parameter>()))
+                ImplementationResolver = l => l.ResolveComponent(new ResolveRequest(serviceBeingResolved, serviceRegistration, Enumerable.Empty<Parameter>())),
             };
 
             var implementationType = serviceRegistration.Registration.Activator.LimitType;

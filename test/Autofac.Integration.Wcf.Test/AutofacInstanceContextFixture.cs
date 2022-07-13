@@ -35,7 +35,7 @@ namespace Autofac.Integration.Wcf.Test
             {
                 ConstructorString = "TestService",
                 ServiceTypeToHost = typeof(DisposeTracker),
-                ImplementationResolver = l => l.Resolve<DisposeTracker>()
+                ImplementationResolver = l => l.Resolve<DisposeTracker>(),
             };
 
             var context = new AutofacInstanceContext(container);
@@ -54,9 +54,10 @@ namespace Autofac.Integration.Wcf.Test
             container.ComponentRegistry.TryGetServiceRegistration(new TypedService(typeof(DisposeTracker)), out var registration);
             var context = new AutofacInstanceContext(container);
             var disposable = (DisposeTracker)context.ResolveComponent(
-                new ResolveRequest(new TypedService(typeof(DisposeTracker)),
-                registration,
-                Enumerable.Empty<Parameter>()));
+                new ResolveRequest(
+                    new TypedService(typeof(DisposeTracker)),
+                    registration,
+                    Enumerable.Empty<Parameter>()));
             Assert.False(disposable.IsDisposedPublic);
             context.Dispose();
             Assert.True(disposable.IsDisposedPublic);
@@ -75,7 +76,7 @@ namespace Autofac.Integration.Wcf.Test
             var builder = new ContainerBuilder();
             var accessor = new PerInstanceContextModuleAccessor
             {
-                Modules = new[] { new WcfPerIntanceContextModule() }
+                Modules = new[] { new WcfPerInstanceContextModule() },
             };
             builder.RegisterInstance(accessor).As<IPerInstanceContextModuleAccessor>();
             var container = builder.Build();
@@ -89,7 +90,7 @@ namespace Autofac.Integration.Wcf.Test
         public void Resolve_InstanceContextModulesRegistrationHandlesNullModules()
         {
             var builder = new ContainerBuilder();
-            var accessor = new PerInstanceContextModuleAccessor(); 
+            var accessor = new PerInstanceContextModuleAccessor();
             builder.RegisterInstance(accessor).As<IPerInstanceContextModuleAccessor>();
             var container = builder.Build();
             var context = new AutofacInstanceContext(container);
@@ -115,7 +116,7 @@ namespace Autofac.Integration.Wcf.Test
             public int Id { get; set; }
         }
 
-        private class WcfPerIntanceContextModule : Module
+        private class WcfPerInstanceContextModule : Module
         {
             protected override void Load(ContainerBuilder builder) =>
                 builder.RegisterType<ExampleService>()
