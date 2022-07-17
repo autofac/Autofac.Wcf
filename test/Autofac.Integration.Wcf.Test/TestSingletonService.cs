@@ -3,10 +3,9 @@
 
 using System.ServiceModel;
 
-namespace Autofac.Integration.Wcf.Test
+namespace Autofac.Integration.Wcf.Test;
+
+[ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
+public class TestSingletonService : ITestService
 {
-    [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
-    public class TestSingletonService : ITestService
-    {
-    }
 }
