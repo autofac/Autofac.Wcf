@@ -149,7 +149,7 @@ public class AutofacInstanceContext : IExtension<InstanceContext>, IDisposable, 
     public IComponentRegistry ComponentRegistry => OperationLifetime.ComponentRegistry;
 
     /// <inheritdoc />
-    public object ResolveComponent(ResolveRequest request) => OperationLifetime.ResolveComponent(request);
+    public object ResolveComponent(in ResolveRequest request) => OperationLifetime.ResolveComponent(request);
 
     /// <summary>
     /// Retrieve a service instance from the context.
