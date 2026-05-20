@@ -10,8 +10,8 @@
 
 namespace Autofac.Integration.Wcf {
     using System;
-    
-    
+
+
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -23,15 +23,15 @@ namespace Autofac.Integration.Wcf {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class AutofacServiceHostFactoryResources {
-        
+
         private static global::System.Resources.ResourceManager resourceMan;
-        
+
         private static global::System.Globalization.CultureInfo resourceCulture;
-        
+
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         internal AutofacServiceHostFactoryResources() {
         }
-        
+
         /// <summary>
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
@@ -45,7 +45,7 @@ namespace Autofac.Integration.Wcf {
                 return resourceMan;
             }
         }
-        
+
         /// <summary>
         ///   Overrides the current thread's CurrentUICulture property for all
         ///   resource lookups using this strongly typed resource class.
@@ -59,7 +59,7 @@ namespace Autofac.Integration.Wcf {
                 resourceCulture = value;
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to The AutofacServiceHost.Container static property must be set before services can be instantiated..
         /// </summary>
@@ -68,7 +68,7 @@ namespace Autofac.Integration.Wcf {
                 return ResourceManager.GetString("ContainerIsNull", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Service &apos;{0}&apos; is registered in such a way that its implementation type could not be derived. This is required for WCF integration. Consider using a reflection-based registration or an expression-based registration where the return value is a class type. The current default registration is &apos;{1}&apos;..
         /// </summary>
@@ -77,7 +77,7 @@ namespace Autofac.Integration.Wcf {
                 return ResourceManager.GetString("ImplementationTypeUnknown", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to The service &apos;{0}&apos; configured for WCF is not registered with the Autofac container..
         /// </summary>
