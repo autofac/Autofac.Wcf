@@ -40,7 +40,7 @@ public class AutofacDependencyInjectionServiceBehaviorFixture
 
     private class TestHost : ServiceHostBase
     {
-        protected override ServiceDescription CreateDescription(out IDictionary<string, ContractDescription> implementedContracts) =>
-            throw new NotImplementedException();
+        protected override ServiceDescription CreateDescription(out IDictionary<string, ContractDescription> implementedContracts)
+            => throw new NotImplementedException();
     }
 }

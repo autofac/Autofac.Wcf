@@ -23,7 +23,10 @@ public class ServiceImplementationData
     /// A <see cref="string"/> used to generate this service
     /// implementation data.
     /// </value>
-    public string? ConstructorString { get; set; }
+    public string? ConstructorString
+    {
+        get; set;
+    }
 
     /// <summary>
     /// Gets or sets a value indicating whether the service should be hosted as a singleton.
@@ -31,7 +34,10 @@ public class ServiceImplementationData
     /// <value>
     /// <see langword="true" /> if this service should be a singleton; <see langword="false" /> if not.
     /// </value>
-    public bool HostAsSingleton { get; set; }
+    public bool HostAsSingleton
+    {
+        get; set;
+    }
 
     /// <summary>
     /// Gets or sets the concrete type to host.
@@ -41,7 +47,10 @@ public class ServiceImplementationData
     /// service host when it is initially created. This type must be a concrete
     /// class and not an interface.
     /// </value>
-    public Type? ServiceTypeToHost { get; set; }
+    public Type? ServiceTypeToHost
+    {
+        get; set;
+    }
 
     /// <summary>
     /// Gets or sets a mechanism that allows the <see cref="AutofacInstanceContext"/>

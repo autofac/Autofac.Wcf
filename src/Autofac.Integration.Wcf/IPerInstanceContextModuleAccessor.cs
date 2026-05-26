@@ -18,5 +18,8 @@ public interface IPerInstanceContextModuleAccessor
     /// <summary>
     /// Gets the list of per-instance-context modules to register.
     /// </summary>
-    IEnumerable<IModule> Modules { get; }
+    IEnumerable<IModule> Modules
+    {
+        get;
+    }
 }

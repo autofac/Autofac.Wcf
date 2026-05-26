@@ -66,7 +66,7 @@ public class DefaultServiceImplementationDataProvider : IServiceImplementationDa
         }
 
         Service serviceBeingResolved = new KeyedService(value, typeof(object));
-        if (!AutofacHostFactory.Container.ComponentRegistry.TryGetServiceRegistration(serviceBeingResolved, out ServiceRegistration serviceRegistration))
+        if (!AutofacHostFactory.Container.ComponentRegistry.TryGetServiceRegistration(serviceBeingResolved, out var serviceRegistration))
         {
             var serviceType = Type.GetType(value, false);
             if (serviceType != null)
@@ -109,8 +109,8 @@ public class DefaultServiceImplementationDataProvider : IServiceImplementationDa
         return data;
     }
 
-    private static bool IsRegistrationSingleInstance(IComponentRegistration registration) =>
-        registration.Sharing == InstanceSharing.Shared && registration.Lifetime is RootScopeLifetime;
+    private static bool IsRegistrationSingleInstance(IComponentRegistration registration)
+        => registration.Sharing == InstanceSharing.Shared && registration.Lifetime is RootScopeLifetime;
 
     private static bool IsSingletonWcfService(Type implementationType)
     {

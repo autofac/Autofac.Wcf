@@ -18,8 +18,8 @@ public static class ServiceHostExtensions
     /// <typeparam name="T">The web service contract type.</typeparam>
     /// <param name="serviceHost">The service host.</param>
     /// <param name="container">The container.</param>
-    public static void AddDependencyInjectionBehavior<T>(this ServiceHostBase serviceHost, ILifetimeScope container) =>
-        AddDependencyInjectionBehavior(serviceHost, typeof(T), container);
+    public static void AddDependencyInjectionBehavior<T>(this ServiceHostBase serviceHost, ILifetimeScope container)
+        => AddDependencyInjectionBehavior(serviceHost, typeof(T), container);
 
     /// <summary>
     /// Adds the custom service behavior required for dependency injection.
@@ -27,8 +27,8 @@ public static class ServiceHostExtensions
     /// <param name="serviceHost">The service host.</param>
     /// <param name="contractType">The web service contract type.</param>
     /// <param name="container">The container.</param>
-    public static void AddDependencyInjectionBehavior(this ServiceHostBase serviceHost, Type contractType, ILifetimeScope container) =>
-        AddDependencyInjectionBehavior(serviceHost, contractType, container, Enumerable.Empty<Parameter>());
+    public static void AddDependencyInjectionBehavior(this ServiceHostBase serviceHost, Type contractType, ILifetimeScope container)
+        => AddDependencyInjectionBehavior(serviceHost, contractType, container, Enumerable.Empty<Parameter>());
 
     /// <summary>
     /// Adds the custom service behavior required for dependency injection.
@@ -37,8 +37,8 @@ public static class ServiceHostExtensions
     /// <param name="serviceHost">The service host.</param>
     /// <param name="container">The container.</param>
     /// <param name="parameters">Parameters for the instance.</param>
-    public static void AddDependencyInjectionBehavior<T>(this ServiceHostBase serviceHost, ILifetimeScope container, IEnumerable<Parameter> parameters) =>
-        AddDependencyInjectionBehavior(serviceHost, typeof(T), container, parameters);
+    public static void AddDependencyInjectionBehavior<T>(this ServiceHostBase serviceHost, ILifetimeScope container, IEnumerable<Parameter> parameters)
+        => AddDependencyInjectionBehavior(serviceHost, typeof(T), container, parameters);
 
     /// <summary>
     /// Adds the custom service behavior required for dependency injection.
@@ -76,7 +76,7 @@ public static class ServiceHostExtensions
         }
 
         var serviceToResolve = new TypedService(contractType);
-        if (!container.ComponentRegistry.TryGetServiceRegistration(serviceToResolve, out ServiceRegistration serviceRegistration))
+        if (!container.ComponentRegistry.TryGetServiceRegistration(serviceToResolve, out var serviceRegistration))
         {
             var message = string.Format(CultureInfo.CurrentCulture, ServiceHostExtensionsResources.ContractTypeNotRegistered, contractType.FullName);
             throw new ArgumentException(message, nameof(contractType));
