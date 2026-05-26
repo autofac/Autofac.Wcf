@@ -11,7 +11,7 @@ public class ServiceHostExtensionsFixture
     public void AddDependencyInjectionBehavior_NullContractType_ThrowsException()
     {
         var serviceHost = new ServiceHost(typeof(ServiceType));
-        ArgumentNullException exception = Assert.Throws<ArgumentNullException>(
+        var exception = Assert.Throws<ArgumentNullException>(
             () => serviceHost.AddDependencyInjectionBehavior(null, new ContainerBuilder().Build()));
         Assert.Equal("contractType", exception.ParamName);
     }
@@ -51,7 +51,7 @@ public class ServiceHostExtensionsFixture
     {
         var builder = new ContainerBuilder();
         builder.Register(c => new ServiceType()).As<IContractType>();
-        IContainer container = builder.Build();
+        var container = builder.Build();
 
         var serviceHost = new ServiceHost(typeof(ServiceType));
         serviceHost.AddDependencyInjectionBehavior(typeof(IContractType), container);

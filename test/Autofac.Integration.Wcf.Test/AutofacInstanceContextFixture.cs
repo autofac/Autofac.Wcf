@@ -104,25 +104,34 @@ public class AutofacInstanceContextFixture
 
     private interface IExampleService
     {
-        int Id { get; }
+        int Id
+        {
+            get;
+        }
     }
 
     private class ExampleService : IExampleService
     {
-        public int Id { get; set; }
+        public int Id
+        {
+            get; set;
+        }
     }
 
     private class WcfPerInstanceContextModule : Module
     {
-        protected override void Load(ContainerBuilder builder) =>
-            builder.RegisterType<ExampleService>()
+        protected override void Load(ContainerBuilder builder)
+            => builder.RegisterType<ExampleService>()
                 .As<IExampleService>()
                 .SingleInstance();
     }
 
     public class PerInstanceContextModuleAccessor : IPerInstanceContextModuleAccessor
     {
-        public IEnumerable<IModule> Modules { get; set; }
+        public IEnumerable<IModule> Modules
+        {
+            get; set;
+        }
     }
 
     private class DisposeTracker : Disposable

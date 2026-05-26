@@ -24,41 +24,6 @@ public class AutofacInstanceContext : IExtension<InstanceContext>, IDisposable, 
     private bool _disposed;
 
     /// <summary>
-    /// Gets the current <see cref="AutofacInstanceContext"/>
-    /// for the operation.
-    /// </summary>
-    /// <value>
-    /// The <see cref="AutofacInstanceContext"/> associated
-    /// with the current <see cref="OperationContext"/> if
-    /// one exists; or <see langword="null" /> if there isn't one.
-    /// </value>
-    /// <remarks>
-    /// <para>
-    /// In a singleton service, there won't be a current <see cref="AutofacInstanceContext"/>
-    /// because singleton services are resolved at the time the service host begins
-    /// rather than on each operation.
-    /// </para>
-    /// </remarks>
-    public static AutofacInstanceContext? Current
-    {
-        get
-        {
-            var operationContext = OperationContext.Current;
-            var instanceContext = operationContext?.InstanceContext;
-            return instanceContext?.Extensions.Find<AutofacInstanceContext>();
-        }
-    }
-
-    /// <summary>
-    /// Gets the request/operation lifetime.
-    /// </summary>
-    /// <value>
-    /// An <see cref="ILifetimeScope"/> that this instance
-    /// context will use to resolve service instances.
-    /// </value>
-    public ILifetimeScope OperationLifetime { get; }
-
-    /// <summary>
     /// Initializes a new instance of the <see cref="AutofacInstanceContext"/> class.
     /// </summary>
     /// <param name="container">
@@ -93,6 +58,50 @@ public class AutofacInstanceContext : IExtension<InstanceContext>, IDisposable, 
     ~AutofacInstanceContext() => Dispose(false);
 
     /// <summary>
+    /// Gets the current <see cref="AutofacInstanceContext"/>
+    /// for the operation.
+    /// </summary>
+    /// <value>
+    /// The <see cref="AutofacInstanceContext"/> associated
+    /// with the current <see cref="OperationContext"/> if
+    /// one exists; or <see langword="null" /> if there isn't one.
+    /// </value>
+    /// <remarks>
+    /// <para>
+    /// In a singleton service, there won't be a current <see cref="AutofacInstanceContext"/>
+    /// because singleton services are resolved at the time the service host begins
+    /// rather than on each operation.
+    /// </para>
+    /// </remarks>
+    public static AutofacInstanceContext? Current
+    {
+        get
+        {
+            var operationContext = OperationContext.Current;
+            var instanceContext = operationContext?.InstanceContext;
+            return instanceContext?.Extensions.Find<AutofacInstanceContext>();
+        }
+    }
+
+    /// <summary>
+    /// Gets the request/operation lifetime.
+    /// </summary>
+    /// <value>
+    /// An <see cref="ILifetimeScope"/> that this instance
+    /// context will use to resolve service instances.
+    /// </value>
+    public ILifetimeScope OperationLifetime
+    {
+        get;
+    }
+
+    /// <inheritdoc />
+    public IComponentRegistry ComponentRegistry => OperationLifetime.ComponentRegistry;
+
+    /// <inheritdoc />
+    public object ResolveComponent(in ResolveRequest request) => OperationLifetime.ResolveComponent(request);
+
+    /// <summary>
     /// Enables an extension object to find out when it has been aggregated.
     /// Called when the extension is added to the
     /// <see cref="IExtensibleObject{T}.Extensions"/> property.
@@ -123,6 +132,27 @@ public class AutofacInstanceContext : IExtension<InstanceContext>, IDisposable, 
     }
 
     /// <summary>
+    /// Retrieve a service instance from the context.
+    /// </summary>
+    /// <param name="serviceData">
+    /// Data object containing information about how to resolve the service
+    /// implementation instance.
+    /// </param>
+    /// <returns>The service instance.</returns>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown if <paramref name="serviceData" /> is <see langword="null" />.
+    /// </exception>
+    public object Resolve(ServiceImplementationData serviceData)
+    {
+        if (serviceData == null)
+        {
+            throw new ArgumentNullException(nameof(serviceData));
+        }
+
+        return serviceData.ImplementationResolver!(OperationLifetime);
+    }
+
+    /// <summary>
     /// Handles disposal of managed and unmanaged resources.
     /// </summary>
     /// <param name="disposing">
@@ -143,32 +173,5 @@ public class AutofacInstanceContext : IExtension<InstanceContext>, IDisposable, 
 
             _disposed = true;
         }
-    }
-
-    /// <inheritdoc />
-    public IComponentRegistry ComponentRegistry => OperationLifetime.ComponentRegistry;
-
-    /// <inheritdoc />
-    public object ResolveComponent(in ResolveRequest request) => OperationLifetime.ResolveComponent(request);
-
-    /// <summary>
-    /// Retrieve a service instance from the context.
-    /// </summary>
-    /// <param name="serviceData">
-    /// Data object containing information about how to resolve the service
-    /// implementation instance.
-    /// </param>
-    /// <returns>The service instance.</returns>
-    /// <exception cref="ArgumentNullException">
-    /// Thrown if <paramref name="serviceData" /> is <see langword="null" />.
-    /// </exception>
-    public object Resolve(ServiceImplementationData serviceData)
-    {
-        if (serviceData == null)
-        {
-            throw new ArgumentNullException(nameof(serviceData));
-        }
-
-        return serviceData.ImplementationResolver!(OperationLifetime);
     }
 }

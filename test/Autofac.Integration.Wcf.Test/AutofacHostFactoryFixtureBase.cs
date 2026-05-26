@@ -75,7 +75,7 @@ public abstract class AutofacHostFactoryFixtureBase<T>
             {
                 var factory = new T();
                 var exception = Assert.Throws<InvalidOperationException>(() => factory.CreateServiceHost(typeof(object).FullName, _dummyEndpoints));
-                string expectedMessage = string.Format(AutofacHostFactoryResources.ServiceMustNotBeSingleInstance, typeof(object).FullName);
+                var expectedMessage = string.Format(AutofacHostFactoryResources.ServiceMustNotBeSingleInstance, typeof(object).FullName);
                 Assert.Equal(expectedMessage, exception.Message);
             });
     }
@@ -104,7 +104,7 @@ public abstract class AutofacHostFactoryFixtureBase<T>
                 var factory = new T();
                 var exception = Assert.Throws<InvalidOperationException>(
                 () => factory.CreateServiceHost(typeof(TestSingletonService).AssemblyQualifiedName, _dummyEndpoints));
-                string expectedMessage = string.Format(AutofacHostFactoryResources.ServiceMustBeSingleInstance, typeof(TestSingletonService).FullName);
+                var expectedMessage = string.Format(AutofacHostFactoryResources.ServiceMustBeSingleInstance, typeof(TestSingletonService).FullName);
                 Assert.Equal(expectedMessage, exception.Message);
             });
     }

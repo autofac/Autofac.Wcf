@@ -38,7 +38,10 @@ public abstract class AutofacHostFactory : ServiceHostFactory
     /// An <see cref="ILifetimeScope"/> that will be used to resolve service
     /// implementation instances.
     /// </value>
-    public static ILifetimeScope? Container { get; set; }
+    public static ILifetimeScope? Container
+    {
+        get; set;
+    }
 
     /// <summary>
     /// Gets or sets an action that can be used to programmatically configure
@@ -50,7 +53,10 @@ public abstract class AutofacHostFactory : ServiceHostFactory
     /// behaviors or otherwise modify the host before it gets returned by
     /// the factory.
     /// </value>
-    public static Action<ServiceHostBase>? HostConfigurationAction { get; set; }
+    public static Action<ServiceHostBase>? HostConfigurationAction
+    {
+        get; set;
+    }
 
     /// <summary>
     /// Gets or sets the service implementation data strategy.
@@ -60,12 +66,18 @@ public abstract class AutofacHostFactory : ServiceHostFactory
     /// that will be used to determine the proper service implementation given
     /// a service constructor string.
     /// </value>
-    public static IServiceImplementationDataProvider? ServiceImplementationDataProvider { get; set; }
+    public static IServiceImplementationDataProvider? ServiceImplementationDataProvider
+    {
+        get; set;
+    }
 
     /// <summary>
     /// Gets or sets <see cref="Wcf.Features"/> flags.
     /// </summary>
-    public static Features Features { get; set; }
+    public static Features Features
+    {
+        get; set;
+    }
 
     /// <summary>
     /// Creates a <see cref="ServiceHost"/> with specific base addresses and initializes it with specified data.
