@@ -8,11 +8,16 @@ using Autofac.Core;
 namespace Autofac.Integration.Wcf;
 
 /// <summary>
-/// A list of module registrations. This allows for the current
-/// <see cref="OperationContext"/> or <see cref="WebOperationContext"/>
-/// or any item that is static per <see cref="InstanceContext"/>
-/// to be registered and usable throughout the instance context.
+/// Provides Autofac modules to register per <see cref="InstanceContext"/>.
 /// </summary>
+/// <remarks>
+/// <para>
+/// Implement this interface to supply modules that are registered when
+/// an instance context is created, giving access to context-static items
+/// such as <see cref="OperationContext"/> or
+/// <see cref="WebOperationContext"/> throughout the instance context.
+/// </para>
+/// </remarks>
 public interface IPerInstanceContextModuleAccessor
 {
     /// <summary>

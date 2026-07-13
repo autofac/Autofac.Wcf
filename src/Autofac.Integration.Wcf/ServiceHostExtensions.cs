@@ -15,38 +15,66 @@ public static class ServiceHostExtensions
     /// <summary>
     /// Adds the custom service behavior required for dependency injection.
     /// </summary>
-    /// <typeparam name="T">The web service contract type.</typeparam>
-    /// <param name="serviceHost">The service host.</param>
-    /// <param name="container">The container.</param>
+    /// <typeparam name="T">
+    /// The web service contract type.
+    /// </typeparam>
+    /// <param name="serviceHost">
+    /// The service host.
+    /// </param>
+    /// <param name="container">
+    /// The container.
+    /// </param>
     public static void AddDependencyInjectionBehavior<T>(this ServiceHostBase serviceHost, ILifetimeScope container)
         => AddDependencyInjectionBehavior(serviceHost, typeof(T), container);
 
     /// <summary>
     /// Adds the custom service behavior required for dependency injection.
     /// </summary>
-    /// <param name="serviceHost">The service host.</param>
-    /// <param name="contractType">The web service contract type.</param>
-    /// <param name="container">The container.</param>
+    /// <param name="serviceHost">
+    /// The service host.
+    /// </param>
+    /// <param name="contractType">
+    /// The web service contract type.
+    /// </param>
+    /// <param name="container">
+    /// The container.
+    /// </param>
     public static void AddDependencyInjectionBehavior(this ServiceHostBase serviceHost, Type contractType, ILifetimeScope container)
         => AddDependencyInjectionBehavior(serviceHost, contractType, container, Enumerable.Empty<Parameter>());
 
     /// <summary>
     /// Adds the custom service behavior required for dependency injection.
     /// </summary>
-    /// <typeparam name="T">The web service contract type.</typeparam>
-    /// <param name="serviceHost">The service host.</param>
-    /// <param name="container">The container.</param>
-    /// <param name="parameters">Parameters for the instance.</param>
+    /// <typeparam name="T">
+    /// The web service contract type.
+    /// </typeparam>
+    /// <param name="serviceHost">
+    /// The service host.
+    /// </param>
+    /// <param name="container">
+    /// The container.
+    /// </param>
+    /// <param name="parameters">
+    /// Parameters for the instance.
+    /// </param>
     public static void AddDependencyInjectionBehavior<T>(this ServiceHostBase serviceHost, ILifetimeScope container, IEnumerable<Parameter> parameters)
         => AddDependencyInjectionBehavior(serviceHost, typeof(T), container, parameters);
 
     /// <summary>
     /// Adds the custom service behavior required for dependency injection.
     /// </summary>
-    /// <param name="serviceHost">The service host.</param>
-    /// <param name="contractType">The web service contract type.</param>
-    /// <param name="container">The container.</param>
-    /// <param name="parameters">Parameters for the instance.</param>
+    /// <param name="serviceHost">
+    /// The service host.
+    /// </param>
+    /// <param name="contractType">
+    /// The web service contract type.
+    /// </param>
+    /// <param name="container">
+    /// The container.
+    /// </param>
+    /// <param name="parameters">
+    /// Parameters for the instance.
+    /// </param>
     public static void AddDependencyInjectionBehavior(this ServiceHostBase serviceHost, Type contractType, ILifetimeScope container, IEnumerable<Parameter> parameters)
     {
         if (serviceHost == null)

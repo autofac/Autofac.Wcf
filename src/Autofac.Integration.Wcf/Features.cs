@@ -17,8 +17,8 @@ public enum Features
     None = 0,
 
     /// <summary>
-    /// Enables InstancePerContextModules, which allows for modules to be registered
-    /// when an <see cref="AutofacInstanceContext"/> is instantiated.
+    /// Allows modules to be registered when an
+    /// <see cref="AutofacInstanceContext"/> is instantiated.
     /// </summary>
     InstancePerContextModules = 1,
 

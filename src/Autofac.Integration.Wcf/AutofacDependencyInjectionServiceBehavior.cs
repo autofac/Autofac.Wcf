@@ -10,7 +10,8 @@ using System.ServiceModel.Dispatcher;
 namespace Autofac.Integration.Wcf;
 
 /// <summary>
-/// Sets the instance provider to an AutofacInstanceProvider.
+/// Sets the <see cref="IInstanceProvider"/> on all endpoint dispatchers to use
+/// an <see cref="AutofacInstanceProvider"/>.
 /// </summary>
 public class AutofacDependencyInjectionServiceBehavior : IServiceBehavior
 {
@@ -28,7 +29,8 @@ public class AutofacDependencyInjectionServiceBehavior : IServiceBehavior
     /// the type to use for the service implementation.
     /// </param>
     /// <exception cref="ArgumentNullException">
-    /// Thrown if <paramref name="rootLifetimeScope" /> or <paramref name="serviceData" /> is <see langword="null" />.
+    /// Thrown if <paramref name="rootLifetimeScope" /> or
+    /// <paramref name="serviceData" /> is <see langword="null" />.
     /// </exception>
     public AutofacDependencyInjectionServiceBehavior(ILifetimeScope rootLifetimeScope, ServiceImplementationData serviceData)
     {
@@ -37,21 +39,35 @@ public class AutofacDependencyInjectionServiceBehavior : IServiceBehavior
     }
 
     /// <summary>
-    /// Provides the ability to inspect the service host and the service description to confirm that the service can run successfully.
+    /// Inspects the service host and service description to confirm the service
+    /// can run successfully.
     /// </summary>
-    /// <param name="serviceDescription">The service description.</param>
-    /// <param name="serviceHostBase">The service host that is currently being constructed.</param>
+    /// <param name="serviceDescription">
+    /// The service description.
+    /// </param>
+    /// <param name="serviceHostBase">
+    /// The service host that is currently being constructed.
+    /// </param>
     public void Validate(ServiceDescription serviceDescription, ServiceHostBase serviceHostBase)
     {
     }
 
     /// <summary>
-    /// Provides the ability to pass custom data to binding elements to support the contract implementation.
+    /// Passes custom data to binding elements to support the contract
+    /// implementation.
     /// </summary>
-    /// <param name="serviceDescription">The service description of the service.</param>
-    /// <param name="serviceHostBase">The host of the service.</param>
-    /// <param name="endpoints">The service endpoints.</param>
-    /// <param name="bindingParameters">Custom objects to which binding elements have access.</param>
+    /// <param name="serviceDescription">
+    /// The service description.
+    /// </param>
+    /// <param name="serviceHostBase">
+    /// The host of the service.
+    /// </param>
+    /// <param name="endpoints">
+    /// The service endpoints.
+    /// </param>
+    /// <param name="bindingParameters">
+    /// Custom objects to which binding elements have access.
+    /// </param>
     public void AddBindingParameters(
         ServiceDescription serviceDescription,
         ServiceHostBase serviceHostBase,
@@ -61,10 +77,15 @@ public class AutofacDependencyInjectionServiceBehavior : IServiceBehavior
     }
 
     /// <summary>
-    /// Provides the ability to change run-time property values or insert custom extension objects such as error handlers, message or parameter interceptors, security extensions, and other custom extension objects.
+    /// Inserts custom extension objects such as error handlers, message
+    /// interceptors, and security extensions into the dispatch runtime.
     /// </summary>
-    /// <param name="serviceDescription">The service description.</param>
-    /// <param name="serviceHostBase">The host that is currently being built.</param>
+    /// <param name="serviceDescription">
+    /// The service description.
+    /// </param>
+    /// <param name="serviceHostBase">
+    /// The host that is currently being built.
+    /// </param>
     /// <exception cref="ArgumentNullException">
     /// Thrown if <paramref name="serviceDescription" /> or
     /// <paramref name="serviceHostBase" /> is <see langword="null" />.

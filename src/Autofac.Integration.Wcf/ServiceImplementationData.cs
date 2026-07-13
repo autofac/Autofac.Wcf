@@ -29,7 +29,8 @@ public class ServiceImplementationData
     }
 
     /// <summary>
-    /// Gets or sets a value indicating whether the service should be hosted as a singleton.
+    /// Gets or sets a value indicating whether the service should be
+    /// hosted as a singleton.
     /// </summary>
     /// <value>
     /// <see langword="true" /> if this service should be a singleton; <see langword="false" /> if not.
@@ -53,14 +54,13 @@ public class ServiceImplementationData
     }
 
     /// <summary>
-    /// Gets or sets a mechanism that allows the <see cref="AutofacInstanceContext"/>
-    /// to get the actual implementation for a service.
+    /// Gets or sets a mechanism that allows
+    /// <see cref="AutofacInstanceContext"/> to get the service implementation.
     /// </summary>
     /// <value>
-    /// An <see cref="Func{T,U}"/> that takes in a lifetime scope returns
-    /// an <see cref="object"/> that is the implementation type for the
-    /// given service. This is the object that the service host will use
-    /// and should be assignable from the <see cref="ServiceTypeToHost"/>.
+    /// A <see cref="Func{T,TResult}"/> that takes a lifetime scope and
+    /// returns the implementation instance. The returned object must be
+    /// assignable from <see cref="ServiceTypeToHost"/>.
     /// </value>
     public Func<ILifetimeScope, object>? ImplementationResolver
     {
