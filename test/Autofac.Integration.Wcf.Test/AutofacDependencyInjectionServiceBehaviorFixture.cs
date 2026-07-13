@@ -12,14 +12,14 @@ public class AutofacDependencyInjectionServiceBehaviorFixture
     public void Ctor_RequiresContainer()
     {
         var data = new ServiceImplementationData();
-        Assert.Throws<ArgumentNullException>(() => new AutofacDependencyInjectionServiceBehavior(null, data));
+        Assert.Throws<ArgumentNullException>(() => new AutofacDependencyInjectionServiceBehavior(null!, data));
     }
 
     [Fact]
     public void Ctor_RequiresServiceImplementationData()
     {
         var container = new ContainerBuilder().Build();
-        Assert.Throws<ArgumentNullException>(() => new AutofacDependencyInjectionServiceBehavior(container, null));
+        Assert.Throws<ArgumentNullException>(() => new AutofacDependencyInjectionServiceBehavior(container, null!));
     }
 
     [Fact]
@@ -27,7 +27,7 @@ public class AutofacDependencyInjectionServiceBehaviorFixture
     {
         var provider = new AutofacDependencyInjectionServiceBehavior(new ContainerBuilder().Build(), new ServiceImplementationData());
         var host = new TestHost();
-        Assert.Throws<ArgumentNullException>(() => provider.ApplyDispatchBehavior(null, host));
+        Assert.Throws<ArgumentNullException>(() => provider.ApplyDispatchBehavior(null!, host));
     }
 
     [Fact]
@@ -35,7 +35,7 @@ public class AutofacDependencyInjectionServiceBehaviorFixture
     {
         var provider = new AutofacDependencyInjectionServiceBehavior(new ContainerBuilder().Build(), new ServiceImplementationData());
         var description = new ServiceDescription();
-        Assert.Throws<ArgumentNullException>(() => provider.ApplyDispatchBehavior(description, null));
+        Assert.Throws<ArgumentNullException>(() => provider.ApplyDispatchBehavior(description, null!));
     }
 
     private class TestHost : ServiceHostBase

@@ -12,7 +12,7 @@ public class ServiceHostExtensionsFixture
     {
         var serviceHost = new ServiceHost(typeof(ServiceType));
         var exception = Assert.Throws<ArgumentNullException>(
-            () => serviceHost.AddDependencyInjectionBehavior(null, new ContainerBuilder().Build()));
+            () => serviceHost.AddDependencyInjectionBehavior(null!, new ContainerBuilder().Build()));
         Assert.Equal("contractType", exception.ParamName);
     }
 
@@ -21,7 +21,7 @@ public class ServiceHostExtensionsFixture
     {
         var serviceHost = new ServiceHost(typeof(ServiceType));
         var exception = Assert.Throws<ArgumentNullException>(
-            () => serviceHost.AddDependencyInjectionBehavior(typeof(IContractType), null));
+            () => serviceHost.AddDependencyInjectionBehavior(typeof(IContractType), null!));
         Assert.Equal("container", exception.ParamName);
     }
 
@@ -30,7 +30,7 @@ public class ServiceHostExtensionsFixture
     {
         var serviceHost = new ServiceHost(typeof(ServiceType));
         var exception = Assert.Throws<ArgumentNullException>(
-            () => serviceHost.AddDependencyInjectionBehavior(typeof(IContractType), new ContainerBuilder().Build(), null));
+            () => serviceHost.AddDependencyInjectionBehavior(typeof(IContractType), new ContainerBuilder().Build(), null!));
         Assert.Equal("parameters", exception.ParamName);
     }
 

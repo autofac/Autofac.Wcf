@@ -14,7 +14,7 @@ public abstract class AutofacHostFactoryFixtureBase<T>
     public void NullConstructorStringThrowsException()
     {
         var factory = new T();
-        var exception = Assert.Throws<ArgumentNullException>(() => factory.CreateServiceHost(null, _dummyEndpoints));
+        var exception = Assert.Throws<ArgumentNullException>(() => factory.CreateServiceHost(null!, _dummyEndpoints));
         Assert.Equal("constructorString", exception.ParamName);
     }
 
@@ -139,8 +139,8 @@ public abstract class AutofacHostFactoryFixtureBase<T>
     {
         try
         {
-            ServiceHostBase hostParameter = null;
-            ServiceHostBase actualHost = null;
+            ServiceHostBase? hostParameter = null;
+            ServiceHostBase? actualHost = null;
             var actionCalled = false;
 
             AutofacHostFactory.HostConfigurationAction = host =>

@@ -15,14 +15,14 @@ public class AutofacInstanceProviderFixture
     public void Ctor_RequiresContainer()
     {
         var data = new ServiceImplementationData();
-        Assert.Throws<ArgumentNullException>(() => new AutofacInstanceProvider(null, data));
+        Assert.Throws<ArgumentNullException>(() => new AutofacInstanceProvider(null!, data));
     }
 
     [Fact]
     public void Ctor_RequiresServiceImplementationData()
     {
         var container = new ContainerBuilder().Build();
-        Assert.Throws<ArgumentNullException>(() => new AutofacInstanceProvider(container, null));
+        Assert.Throws<ArgumentNullException>(() => new AutofacInstanceProvider(container, null!));
     }
 
     [Fact]
@@ -32,7 +32,7 @@ public class AutofacInstanceProviderFixture
         var container = new ContainerBuilder().Build();
         var provider = new AutofacInstanceProvider(container, data);
         var message = new TestMessage();
-        Assert.Throws<ArgumentNullException>(() => provider.GetInstance(null, message));
+        Assert.Throws<ArgumentNullException>(() => provider.GetInstance(null!, message));
     }
 
     [Fact]
@@ -42,7 +42,7 @@ public class AutofacInstanceProviderFixture
         var container = new ContainerBuilder().Build();
         var provider = new AutofacInstanceProvider(container, data);
         var instance = new object();
-        Assert.Throws<ArgumentNullException>(() => provider.ReleaseInstance(null, instance));
+        Assert.Throws<ArgumentNullException>(() => provider.ReleaseInstance(null!, instance));
     }
 
     [Fact]

@@ -11,7 +11,7 @@ public class AutofacInstanceContextFixture
     [Fact]
     public void Ctor_RequiresParentScope()
     {
-        Assert.Throws<ArgumentNullException>(() => new AutofacInstanceContext(null));
+        Assert.Throws<ArgumentNullException>(() => new AutofacInstanceContext(null!));
     }
 
     [Fact]
@@ -63,7 +63,7 @@ public class AutofacInstanceContextFixture
     public void Resolve_RequiresServiceImplementationData()
     {
         var context = new AutofacInstanceContext(new ContainerBuilder().Build());
-        Assert.Throws<ArgumentNullException>(() => context.Resolve(null));
+        Assert.Throws<ArgumentNullException>(() => context.Resolve(null!));
     }
 
     [Fact]
@@ -128,10 +128,7 @@ public class AutofacInstanceContextFixture
 
     public class PerInstanceContextModuleAccessor : IPerInstanceContextModuleAccessor
     {
-        public IEnumerable<IModule> Modules
-        {
-            get; set;
-        }
+        public IEnumerable<IModule> Modules { get; set; } = null!;
     }
 
     private class DisposeTracker : Disposable
