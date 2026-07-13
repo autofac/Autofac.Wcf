@@ -2,7 +2,7 @@
 
 Windows Communication Foundation (WCF) integration for [Autofac](https://autofac.org).
 
-[![Build status](https://github.com/autofac/Autofac.Wcf/actions/workflows/ci.yml/badge.svg?branch=develop)](https://github.com/autofac/Autofac.Wcf/actions/workflows/ci.yml)
+[![Build status](https://github.com/autofac/Autofac.Wcf/actions/workflows/main.yml/badge.svg)](https://github.com/autofac/Autofac.Wcf/actions/workflows/main.yml) [![codecov](https://codecov.io/gh/Autofac/Autofac.Wcf/branch/develop/graph/badge.svg)](https://codecov.io/gh/Autofac/Autofac.Wcf) [![NuGet](https://img.shields.io/nuget/v/Autofac.Wcf.svg)](https://nuget.org/packages/Autofac.Wcf)
 
 Please file issues and pull requests for this package [in this repository](https://github.com/autofac/Autofac.Wcf/issues) rather than in the Autofac core repo.
 
@@ -15,7 +15,7 @@ Please file issues and pull requests for this package [in this repository](https
 
 During application startup, for each service register a `ChannelFactory<T>` and a function that uses the factory to open channels:
 
-```c#
+```csharp
 var builder = new ContainerBuilder();
 
 // Register the channel factory for the service. Make it
@@ -42,7 +42,7 @@ var container = builder.Build();
 
 When consuming the service, add a constructor dependency as normal. This example shows an application that prints a track listing to the console using the remote `ITrackListing` service. It does this via the `AlbumPrinter` class:
 
-```c#
+```csharp
 public class AlbumPrinter
 {
   readonly ITrackListing _trackListing;
@@ -66,7 +66,7 @@ To get Autofac integrated with WCF on the service side you need to reference the
 
 Here’s a sample application startup block:
 
-```c#
+```csharp
 protected void Application_Start()
 {
   var builder = new ContainerBuilder();
