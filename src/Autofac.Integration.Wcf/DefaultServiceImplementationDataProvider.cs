@@ -18,21 +18,19 @@ public class DefaultServiceImplementationDataProvider : IServiceImplementationDa
     /// Gets data about a service implementation.
     /// </summary>
     /// <param name="value">
-    /// The constructor string passed in to the service host factory
-    /// that is used to determine which type to host/use as a service
-    /// implementation.
+    /// The constructor string from the service host factory, identifying
+    /// the service type to host.
     /// </param>
     /// <returns>
-    /// A <see cref="ServiceImplementationData"/>
-    /// object containing information about which type to use in
-    /// the service host and which type to use to resolve the implementation.
+    /// A <see cref="ServiceImplementationData"/> with the service host
+    /// type and implementation resolver.
     /// </returns>
     /// <remarks>
     /// <para>
     /// This resolver takes the constructor string stored in the .svc file
     /// and resolves a matching keyed or typed service from the root
-    /// application container. That resolved type is used both for the
-    /// service host as well as the implementation type.
+    /// application container. That resolved type is used for both the
+    /// service host and the implementation type.
     /// </para>
     /// </remarks>
     /// <exception cref="InvalidOperationException">

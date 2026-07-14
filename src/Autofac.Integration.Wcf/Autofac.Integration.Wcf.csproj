@@ -65,6 +65,7 @@
     <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.556">
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
+    <PackageReference Include="System.Reflection.DispatchProxy" Version="4.8.2" />
   </ItemGroup>
   <ItemDefinitionGroup>
     <EmbeddedResource>
@@ -75,16 +76,16 @@
     </EmbeddedResource>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <EmbeddedResource Update="AutofacControllerConfigurationAttributeResources.resx">
-      <StronglyTypedNamespace>Autofac.Integration.Wcf</StronglyTypedNamespace>
-    </EmbeddedResource>
     <EmbeddedResource Update="AutofacHostFactoryResources.resx">
       <StronglyTypedNamespace>Autofac.Integration.Wcf</StronglyTypedNamespace>
     </EmbeddedResource>
-    <EmbeddedResource Update="RegistrationExtensionsResources.resx">
+    <EmbeddedResource Update="AutofacServiceHostFactoryResources.resx">
       <StronglyTypedNamespace>Autofac.Integration.Wcf</StronglyTypedNamespace>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources.resx">
+      <StronglyTypedNamespace>Autofac.Integration.Wcf</StronglyTypedNamespace>
+    </EmbeddedResource>
+    <EmbeddedResource Update="ServiceHostExtensionsResources.resx">
       <StronglyTypedNamespace>Autofac.Integration.Wcf</StronglyTypedNamespace>
     </EmbeddedResource>
   </ItemGroup>

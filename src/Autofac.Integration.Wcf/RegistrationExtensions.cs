@@ -12,23 +12,33 @@ namespace Autofac.Integration.Wcf;
 public static class RegistrationExtensions
 {
     /// <summary>
-    /// Dispose the channel instance in such a way that exceptions aren't thrown
-    /// if a faulted channel is closed.
+    /// Disposes the channel instance safely, suppressing exceptions thrown
+    /// when closing a faulted channel.
     /// </summary>
-    /// <typeparam name="TLimit">Registration limit type.</typeparam>
-    /// <typeparam name="TActivatorData">Activator data type.</typeparam>
-    /// <typeparam name="TRegistrationStyle">Registration style.</typeparam>
-    /// <param name="registration">Registration to set release action for.</param>
-    /// <returns>Registration builder allowing the registration to be configured.</returns>
-    /// <remarks>This will eat exceptions generated in the closing of the channel.</remarks>
+    /// <typeparam name="TLimit">
+    /// Registration limit type.
+    /// </typeparam>
+    /// <typeparam name="TActivatorData">
+    /// Activator data type.
+    /// </typeparam>
+    /// <typeparam name="TRegistrationStyle">
+    /// Registration style.
+    /// </typeparam>
+    /// <param name="registration">
+    /// Registration to set the release action for.
+    /// </param>
+    /// <returns>
+    /// Registration builder allowing the registration to be configured.
+    /// </returns>
+    /// <remarks>
+    /// Exceptions thrown when closing a faulted channel are suppressed.
+    /// </remarks>
     public static IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle>
         UseWcfSafeRelease<TLimit, TActivatorData, TRegistrationStyle>(
             this IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> registration)
     {
-        // When a channel is closed in WCF, the Dispose method calls Close internally.
-        // If the channel is in a faulted state, the Close method will throw, yielding
-        // an incorrect exception to be thrown during disposal. This extension fixes
-        // that design problem.
+        // WCF's Dispose calls Close, which throws if the channel is faulted.
+        // OnRelease with CloseChannel handles faulted channels via Abort instead.
         if (registration == null)
         {
             throw new ArgumentNullException(nameof(registration));

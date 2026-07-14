@@ -58,19 +58,18 @@ public class AutofacInstanceContext : IExtension<InstanceContext>, IDisposable, 
     ~AutofacInstanceContext() => Dispose(false);
 
     /// <summary>
-    /// Gets the current <see cref="AutofacInstanceContext"/>
-    /// for the operation.
+    /// Gets the current <see cref="AutofacInstanceContext"/> for the operation.
     /// </summary>
     /// <value>
-    /// The <see cref="AutofacInstanceContext"/> associated
-    /// with the current <see cref="OperationContext"/> if
-    /// one exists; or <see langword="null" /> if there isn't one.
+    /// The <see cref="AutofacInstanceContext"/> associated with the current
+    /// <see cref="OperationContext"/> if one exists; or <see langword="null" /> if
+    /// there isn't one.
     /// </value>
     /// <remarks>
     /// <para>
-    /// In a singleton service, there won't be a current <see cref="AutofacInstanceContext"/>
-    /// because singleton services are resolved at the time the service host begins
-    /// rather than on each operation.
+    /// In a singleton service, there won't be a current
+    /// <see cref="AutofacInstanceContext"/> because singleton services are resolved
+    /// at the time the service host begins rather than on each operation.
     /// </para>
     /// </remarks>
     public static AutofacInstanceContext? Current
@@ -87,8 +86,8 @@ public class AutofacInstanceContext : IExtension<InstanceContext>, IDisposable, 
     /// Gets the request/operation lifetime.
     /// </summary>
     /// <value>
-    /// An <see cref="ILifetimeScope"/> that this instance
-    /// context will use to resolve service instances.
+    /// An <see cref="ILifetimeScope"/> that this instance context will use to
+    /// resolve service instances.
     /// </value>
     public ILifetimeScope OperationLifetime
     {
@@ -102,28 +101,30 @@ public class AutofacInstanceContext : IExtension<InstanceContext>, IDisposable, 
     public object ResolveComponent(in ResolveRequest request) => OperationLifetime.ResolveComponent(request);
 
     /// <summary>
-    /// Enables an extension object to find out when it has been aggregated.
     /// Called when the extension is added to the
     /// <see cref="IExtensibleObject{T}.Extensions"/> property.
     /// </summary>
-    /// <param name="owner">The extensible object that aggregates this extension.</param>
+    /// <param name="owner">
+    /// The extensible object that aggregates this extension.
+    /// </param>
     public void Attach(InstanceContext owner)
     {
     }
 
     /// <summary>
-    /// Enables an object to find out when it is no longer aggregated.
     /// Called when an extension is removed from the
     /// <see cref="IExtensibleObject{T}.Extensions"/> property.
     /// </summary>
-    /// <param name="owner">The extensible object that aggregates this extension.</param>
+    /// <param name="owner">
+    /// The extensible object that aggregates this extension.
+    /// </param>
     public void Detach(InstanceContext owner)
     {
     }
 
     /// <summary>
-    /// Performs application-defined tasks associated with freeing, releasing, or
-    /// resetting unmanaged resources.
+    /// Performs application-defined tasks associated with freeing or releasing
+    /// resources.
     /// </summary>
     public void Dispose()
     {
@@ -132,13 +133,15 @@ public class AutofacInstanceContext : IExtension<InstanceContext>, IDisposable, 
     }
 
     /// <summary>
-    /// Retrieve a service instance from the context.
+    /// Retrieves a service instance from the context.
     /// </summary>
     /// <param name="serviceData">
     /// Data object containing information about how to resolve the service
     /// implementation instance.
     /// </param>
-    /// <returns>The service instance.</returns>
+    /// <returns>
+    /// The service instance.
+    /// </returns>
     /// <exception cref="ArgumentNullException">
     /// Thrown if <paramref name="serviceData" /> is <see langword="null" />.
     /// </exception>
@@ -156,10 +159,8 @@ public class AutofacInstanceContext : IExtension<InstanceContext>, IDisposable, 
     /// Handles disposal of managed and unmanaged resources.
     /// </summary>
     /// <param name="disposing">
-    /// <see langword="true" /> to dispose of managed resources (during a manual execution
-    /// of <see cref="Dispose()"/>); or
-    /// <see langword="false" /> if this is getting run as part of finalization where
-    /// managed resources may have already been cleaned up.
+    /// <see langword="true" /> to dispose of managed resources; or
+    /// <see langword="false" /> during finalization.
     /// </param>
     protected virtual void Dispose(bool disposing)
     {

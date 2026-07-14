@@ -12,67 +12,47 @@ namespace Autofac.Integration.Wcf;
 /// </summary>
 /// <remarks>
 /// <para>
-/// The Autofac service host factory allows you to change
-/// the strategy by which service implementations are resolved. You do this by
-/// setting the <see cref="ServiceImplementationDataProvider"/>
-/// with a strategy implementation.
+/// You can change the strategy by which service implementations are resolved by
+/// setting <see cref="ServiceImplementationDataProvider"/>. If it is
+/// <see langword="null" />, a <see cref="DefaultServiceImplementationDataProvider"/>
+/// is used.
 /// </para>
 /// <para>
-/// If <see cref="ServiceImplementationDataProvider"/>
-/// is <see langword="null" /> a new instance of <see cref="DefaultServiceImplementationDataProvider"/>
-/// will be used.
-/// </para>
-/// <para>
-/// You may configure additional behaviors or other aspects of generated
-/// service instances by setting the <see cref="HostConfigurationAction"/>.
-/// If this value is not <see langword="null" />, generated host instances
-/// will be run through that action.
+/// Set <see cref="HostConfigurationAction"/> to configure additional behaviors or
+/// other aspects of the generated host instances before they are returned.
 /// </para>
 /// </remarks>
 public abstract class AutofacHostFactory : ServiceHostFactory
 {
     /// <summary>
-    /// Gets or sets the container or lifetime scope from which service instances will be retrieved.
+    /// Gets or sets the container or lifetime scope that service instances are
+    /// resolved from.
     /// </summary>
-    /// <value>
-    /// An <see cref="ILifetimeScope"/> that will be used to resolve service
-    /// implementation instances.
-    /// </value>
     public static ILifetimeScope? Container
     {
         get; set;
     }
 
     /// <summary>
-    /// Gets or sets an action that can be used to programmatically configure
-    /// service host instances this factory generates.
+    /// Gets or sets an action used to configure the service host instances this
+    /// factory generates before they are returned.
     /// </summary>
-    /// <value>
-    /// An <see cref="Action{T}"/> that can be used to configure service host
-    /// instances that this factory creates. This action can be used to add
-    /// behaviors or otherwise modify the host before it gets returned by
-    /// the factory.
-    /// </value>
     public static Action<ServiceHostBase>? HostConfigurationAction
     {
         get; set;
     }
 
     /// <summary>
-    /// Gets or sets the service implementation data strategy.
+    /// Gets or sets the strategy used to determine the service implementation
+    /// for a given constructor string.
     /// </summary>
-    /// <value>
-    /// An <see cref="IServiceImplementationDataProvider"/>
-    /// that will be used to determine the proper service implementation given
-    /// a service constructor string.
-    /// </value>
     public static IServiceImplementationDataProvider? ServiceImplementationDataProvider
     {
         get; set;
     }
 
     /// <summary>
-    /// Gets or sets <see cref="Wcf.Features"/> flags.
+    /// Gets or sets the <see cref="Wcf.Features"/> flags.
     /// </summary>
     public static Features Features
     {
@@ -80,30 +60,32 @@ public abstract class AutofacHostFactory : ServiceHostFactory
     }
 
     /// <summary>
-    /// Creates a <see cref="ServiceHost"/> with specific base addresses and initializes it with specified data.
+    /// Creates a <see cref="ServiceHost"/> with the specified base addresses and
+    /// initializes it with the specified data.
     /// </summary>
-    /// <param name="constructorString">The initialization data passed to the <see cref="ServiceHostBase"/> instance being constructed by the factory.</param>
-    /// <param name="baseAddresses">The <see cref="Array"/> of type <see cref="Uri"/> that contains the base addresses for the service hosted.</param>
+    /// <param name="constructorString">
+    /// The initialization data passed to the host being constructed.
+    /// </param>
+    /// <param name="baseAddresses">
+    /// The base addresses for the hosted service.
+    /// </param>
     /// <returns>
-    /// A <see cref="ServiceHost"/> with specific base addresses.
+    /// A <see cref="ServiceHost"/> with the specified base addresses.
     /// </returns>
     /// <exception cref="ArgumentNullException">
-    /// Thrown if <paramref name="constructorString" /> or <paramref name="baseAddresses"/> is <see langword="null" />.
+    /// Thrown if <paramref name="constructorString" /> or
+    /// <paramref name="baseAddresses"/> is <see langword="null" />.
     /// </exception>
     /// <exception cref="ArgumentException">
     /// Thrown if <paramref name="constructorString" /> is empty.
     /// </exception>
     /// <exception cref="InvalidOperationException">
-    /// Thrown if the <see cref="Container"/>
-    /// is <see langword="null" />.
+    /// Thrown if <see cref="Container"/> is <see langword="null" />.
     /// </exception>
     /// <remarks>
     /// <para>
-    /// If <see cref="HostConfigurationAction"/>
-    /// is not <see langword="null" />, the new service host instance is run
-    /// through the configuration action prior to being returned. This allows
-    /// you to programmatically configure behaviors or other aspects of the
-    /// host.
+    /// If <see cref="HostConfigurationAction"/> is not <see langword="null" />, the
+    /// new host is run through it before being returned.
     /// </para>
     /// </remarks>
     public override ServiceHostBase CreateServiceHost(string constructorString, Uri[] baseAddresses)
@@ -141,7 +123,27 @@ public abstract class AutofacHostFactory : ServiceHostFactory
         if (data.HostAsSingleton)
         {
             var singletonInstance = data.ImplementationResolver!(Container);
-            host = CreateSingletonServiceHost(singletonInstance, baseAddresses);
+
+            // Issue 31: an intercepted singleton resolves to a dynamic proxy whose
+            // type both declares and inherits [ServiceContract], which WCF rejects.
+            // Wrap it so WCF sees a type that only inherits the contract; calls
+            // still forward to the resolved instance so interception runs.
+            var instanceToHost = ContractForwardingProxy.WrapIfNecessary(singletonInstance, data.ServiceTypeToHost);
+            host = CreateSingletonServiceHost(instanceToHost, baseAddresses);
+
+            if (!ReferenceEquals(instanceToHost, singletonInstance))
+            {
+                // The proxy type does not carry the class-level [ServiceBehavior],
+                // so re-assert Single mode, which hosting a supplied instance needs.
+                // WCF always populates the description with a default
+                // ServiceBehaviorAttribute, so Find<> is expected to return a
+                // non-null instance here; the null-conditional is defensive only.
+                host.Opening += (sender, args) =>
+                {
+                    var behavior = host.Description.Behaviors.Find<ServiceBehaviorAttribute>();
+                    behavior?.InstanceContextMode = InstanceContextMode.Single;
+                };
+            }
         }
         else
         {
@@ -155,12 +157,17 @@ public abstract class AutofacHostFactory : ServiceHostFactory
     }
 
     /// <summary>
-    /// Creates a <see cref="ServiceHost"/> for a specified type of service with a specific base address.
+    /// Creates a <see cref="ServiceHost"/> for a singleton service instance with
+    /// the specified base addresses.
     /// </summary>
-    /// <param name="singletonInstance">Specifies the singleton service instance to host.</param>
-    /// <param name="baseAddresses">The <see cref="Array"/> of type <see cref="Uri"/> that contains the base addresses for the service hosted.</param>
+    /// <param name="singletonInstance">
+    /// The singleton service instance to host.
+    /// </param>
+    /// <param name="baseAddresses">
+    /// The base addresses for the hosted service.
+    /// </param>
     /// <returns>
-    /// A <see cref="ServiceHost"/> for the singleton service instance specified with a specific base address.
+    /// A <see cref="ServiceHost"/> for the singleton instance.
     /// </returns>
     protected abstract ServiceHost CreateSingletonServiceHost(object singletonInstance, Uri[] baseAddresses);
 

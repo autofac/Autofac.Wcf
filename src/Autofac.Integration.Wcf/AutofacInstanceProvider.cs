@@ -27,7 +27,8 @@ public class AutofacInstanceProvider : IInstanceProvider
     /// implementation instance.
     /// </param>
     /// <exception cref="ArgumentNullException">
-    /// Thrown if <paramref name="rootLifetimeScope" /> or <paramref name="serviceData" /> is <see langword="null" />.
+    /// Thrown if <paramref name="rootLifetimeScope" /> or
+    /// <paramref name="serviceData" /> is <see langword="null" />.
     /// </exception>
     public AutofacInstanceProvider(ILifetimeScope rootLifetimeScope, ServiceImplementationData serviceData)
     {
@@ -36,18 +37,28 @@ public class AutofacInstanceProvider : IInstanceProvider
     }
 
     /// <summary>
-    /// Returns a service object given the specified <see cref="InstanceContext"/> object.
+    /// Returns a service object given the specified <see cref="InstanceContext"/>.
     /// </summary>
-    /// <param name="instanceContext">The current <see cref="InstanceContext"/> object.</param>
-    /// <returns>A user-defined service object.</returns>
+    /// <param name="instanceContext">
+    /// The current <see cref="InstanceContext"/> object.
+    /// </param>
+    /// <returns>
+    /// A user-defined service object.
+    /// </returns>
     public object GetInstance(InstanceContext instanceContext) => GetInstance(instanceContext, null);
 
     /// <summary>
-    /// Returns a service object given the specified <see cref="InstanceContext"/> object.
+    /// Returns a service object given the specified <see cref="InstanceContext"/>.
     /// </summary>
-    /// <param name="instanceContext">The current <see cref="InstanceContext"/> object.</param>
-    /// <param name="message">The message that triggered the creation of a service object.</param>
-    /// <returns>The service object.</returns>
+    /// <param name="instanceContext">
+    /// The current <see cref="InstanceContext"/> object.
+    /// </param>
+    /// <param name="message">
+    /// The message that triggered the creation of a service object.
+    /// </param>
+    /// <returns>
+    /// The service object.
+    /// </returns>
     /// <exception cref="ArgumentNullException">
     /// Thrown if <paramref name="instanceContext" /> is <see langword="null" />.
     /// </exception>
@@ -77,8 +88,12 @@ public class AutofacInstanceProvider : IInstanceProvider
     /// <summary>
     /// Called when an <see cref="InstanceContext"/> object recycles a service object.
     /// </summary>
-    /// <param name="instanceContext">The service's instance context.</param>
-    /// <param name="instance">The service object to be recycled.</param>
+    /// <param name="instanceContext">
+    /// The service's instance context.
+    /// </param>
+    /// <param name="instance">
+    /// The service object to be recycled.
+    /// </param>
     /// <exception cref="ArgumentNullException">
     /// Thrown if <paramref name="instanceContext" /> is <see langword="null" />.
     /// </exception>

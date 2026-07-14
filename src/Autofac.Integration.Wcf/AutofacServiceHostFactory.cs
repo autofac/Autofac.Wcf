@@ -11,15 +11,23 @@ namespace Autofac.Integration.Wcf;
 public class AutofacServiceHostFactory : AutofacHostFactory
 {
     /// <summary>
-    /// Creates a <see cref="ServiceHost"/> for a specified type of service with a specific base address.
+    /// Creates a <see cref="ServiceHost"/> for a specified type of service
+    /// with a specific base address.
     /// </summary>
-    /// <param name="serviceType">Specifies the type of service to host.</param>
-    /// <param name="baseAddresses">The <see cref="Array"/> of type <see cref="Uri"/> that contains the base addresses for the service hosted.</param>
+    /// <param name="serviceType">
+    /// Specifies the type of service to host.
+    /// </param>
+    /// <param name="baseAddresses">
+    /// The <see cref="Array"/> of type <see cref="Uri"/> that contains
+    /// the base addresses for the service hosted.
+    /// </param>
     /// <returns>
-    /// A <see cref="ServiceHost"/> for the type of service specified with a specific base address.
+    /// A <see cref="ServiceHost"/> for the type of service specified with
+    /// a specific base address.
     /// </returns>
     /// <exception cref="ArgumentNullException">
-    /// Thrown if <paramref name="serviceType" /> or <paramref name="baseAddresses" /> is <see langword="null" />.
+    /// Thrown if <paramref name="serviceType" /> or
+    /// <paramref name="baseAddresses" /> is <see langword="null" />.
     /// </exception>
     protected override ServiceHost CreateServiceHost(Type serviceType, Uri[] baseAddresses)
     {
@@ -37,12 +45,19 @@ public class AutofacServiceHostFactory : AutofacHostFactory
     }
 
     /// <summary>
-    /// Creates a <see cref="ServiceHost"/> for a specified type of service with a specific base address.
+    /// Creates a <see cref="ServiceHost"/> for a singleton service instance
+    /// with a specific base address.
     /// </summary>
-    /// <param name="singletonInstance">Specifies the singleton service instance to host.</param>
-    /// <param name="baseAddresses">The <see cref="Array"/> of type <see cref="Uri"/> that contains the base addresses for the service hosted.</param>
+    /// <param name="singletonInstance">
+    /// Specifies the singleton service instance to host.
+    /// </param>
+    /// <param name="baseAddresses">
+    /// The <see cref="Array"/> of type <see cref="Uri"/> that contains
+    /// the base addresses for the service hosted.
+    /// </param>
     /// <returns>
-    /// A <see cref="ServiceHost"/> for the singleton service instance specified with a specific base address.
+    /// A <see cref="ServiceHost"/> for the singleton service instance
+    /// specified with a specific base address.
     /// </returns>
     protected override ServiceHost CreateSingletonServiceHost(object singletonInstance, Uri[] baseAddresses)
     {

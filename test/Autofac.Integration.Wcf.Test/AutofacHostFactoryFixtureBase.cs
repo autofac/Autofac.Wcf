@@ -2,6 +2,8 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System.ServiceModel;
+using Autofac.Extras.DynamicProxy;
+using Autofac.Integration.Wcf.Test.Stubs;
 
 namespace Autofac.Integration.Wcf.Test;
 
@@ -84,13 +86,40 @@ public abstract class AutofacHostFactoryFixtureBase<T>
     public void HostsSingletonServices()
     {
         var builder = new ContainerBuilder();
-        builder.RegisterType<TestSingletonService>().SingleInstance();
+        builder.RegisterType<SingletonService>().SingleInstance();
         TestWithHostedContainer(builder.Build(), () =>
             {
                 var factory = new T();
-                var host = factory.CreateServiceHost(typeof(TestSingletonService).AssemblyQualifiedName, _dummyEndpoints);
+                var host = factory.CreateServiceHost(typeof(SingletonService).AssemblyQualifiedName, _dummyEndpoints);
                 Assert.NotNull(host);
-                Assert.Equal(typeof(TestSingletonService), host.Description.ServiceType);
+                Assert.Equal(typeof(SingletonService), host.Description.ServiceType);
+            });
+    }
+
+    [Fact]
+    public void HostsSingletonServicesRegisteredWithInterfaceInterceptors()
+    {
+        // Issue 31: a SingleInstance service with interface interceptors resolves
+        // to a Castle proxy whose type both declares and inherits a
+        // ServiceContract. Wrapping it in a DispatchProxy lets the host build.
+        var builder = new ContainerBuilder();
+        builder.RegisterType<CountingInterceptor>();
+        builder.RegisterType<SingletonService>()
+            .As<ISingletonService>()
+            .SingleInstance()
+            .EnableInterfaceInterceptors()
+            .InterceptedBy(typeof(CountingInterceptor));
+        TestWithHostedContainer(builder.Build(), () =>
+            {
+                var factory = new T();
+                var host = factory.CreateServiceHost(typeof(ISingletonService).AssemblyQualifiedName, _dummyEndpoints);
+                Assert.NotNull(host);
+
+                // The hosted type must implement the contract but not declare its
+                // own ServiceContract. The Castle proxy declares one; the
+                // DispatchProxy wrapper does not.
+                Assert.True(typeof(ISingletonService).IsAssignableFrom(host.Description.ServiceType));
+                Assert.Empty(host.Description.ServiceType.GetCustomAttributes(typeof(ServiceContractAttribute), false));
             });
     }
 
@@ -98,13 +127,13 @@ public abstract class AutofacHostFactoryFixtureBase<T>
     public void SingletonServiceMustBeRegisteredAsSingleInstance()
     {
         var builder = new ContainerBuilder();
-        builder.RegisterType<TestSingletonService>().InstancePerDependency();
+        builder.RegisterType<SingletonService>().InstancePerDependency();
         TestWithHostedContainer(builder.Build(), () =>
             {
                 var factory = new T();
                 var exception = Assert.Throws<InvalidOperationException>(
-                () => factory.CreateServiceHost(typeof(TestSingletonService).AssemblyQualifiedName, _dummyEndpoints));
-                var expectedMessage = string.Format(AutofacHostFactoryResources.ServiceMustBeSingleInstance, typeof(TestSingletonService).FullName);
+                () => factory.CreateServiceHost(typeof(SingletonService).AssemblyQualifiedName, _dummyEndpoints));
+                var expectedMessage = string.Format(AutofacHostFactoryResources.ServiceMustBeSingleInstance, typeof(SingletonService).FullName);
                 Assert.Equal(expectedMessage, exception.Message);
             });
     }
@@ -113,7 +142,7 @@ public abstract class AutofacHostFactoryFixtureBase<T>
     public void DetectsUnknownImplementationTypes()
     {
         var builder = new ContainerBuilder();
-        builder.Register<ITestService>(c => new TestService()).Named<object>("service");
+        builder.Register<IEchoService>(c => new PerCallEchoService(new TrackedDependency(new DependencyActivity()))).Named<object>("service");
         TestWithHostedContainer(builder.Build(), () =>
             {
                 var factory = new T();

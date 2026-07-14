@@ -29,6 +29,8 @@
     <Reference Include="System.ServiceModel.Web" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Autofac.Extras.DynamicProxy" Version="8.0.1" />
+    <PackageReference Include="Castle.Core" Version="5.2.1" />
     <PackageReference Include="coverlet.collector" Version="10.0.1">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
