@@ -31,7 +31,8 @@
   <ItemGroup>
     <PackageReference Include="Autofac.Extras.DynamicProxy" Version="8.0.1" />
     <PackageReference Include="Castle.Core" Version="5.2.1" />
-    <PackageReference Include="coverlet.collector" Version="10.0.1">
+    <!-- Pinned: 8.0.0 and later ship net8.0+ build assets only, so net481 silently gets no coverage collector. -->
+    <PackageReference Include="coverlet.collector" Version="[6.0.4]">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
